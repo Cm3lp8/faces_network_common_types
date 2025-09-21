@@ -1,14 +1,5 @@
-pub fn add(left: u64, right: u64) -> u64 {
-    left + right
-}
+mod client_trait_impl;
+pub mod signup;
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+pub use signup::SignupData;
 
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
-    }
-}
