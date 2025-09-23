@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use uuid::Uuid;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SignupData {
@@ -14,5 +15,20 @@ impl SignupData {
     }
     pub fn password(&self) -> &str {
         self.password.as_str()
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SignupResponseData {
+    username: String,
+    unique_id: Uuid,
+}
+
+impl SignupResponseData {
+    pub fn new(username: &str, uuid: Uuid) -> Self {
+        Self {
+            username: username.to_owned(),
+            unique_id: uuid,
+        }
     }
 }
