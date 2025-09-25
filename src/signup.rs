@@ -31,4 +31,15 @@ impl SignupResponseData {
             unique_id: uuid,
         }
     }
+    pub fn id(&self) -> Uuid {
+        self.unique_id
+    }
+    pub fn username(&self) -> &str {
+        self.username.as_str()
+    }
+    pub fn jwt(&self) -> String {
+        // TODO
+
+        String::new()
+    }
 }
