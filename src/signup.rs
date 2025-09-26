@@ -22,13 +22,15 @@ impl SignupData {
 pub struct SignupResponseData {
     username: String,
     unique_id: Uuid,
+    jwt: String,
 }
 
 impl SignupResponseData {
-    pub fn new(username: &str, uuid: Uuid) -> Self {
+    pub fn new(username: &str, uuid: Uuid, jwt: String) -> Self {
         Self {
             username: username.to_owned(),
             unique_id: uuid,
+            jwt,
         }
     }
     pub fn id(&self) -> Uuid {
@@ -37,9 +39,7 @@ impl SignupResponseData {
     pub fn username(&self) -> &str {
         self.username.as_str()
     }
-    pub fn jwt(&self) -> String {
-        // TODO
-
-        String::new()
+    pub fn jwt(&self) -> &str {
+        self.jwt.as_str()
     }
 }
