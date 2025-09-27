@@ -59,4 +59,10 @@ impl SignupResponseData {
     pub fn first_experiment_display_context_id(&self) -> Uuid {
         self.first_experiment_display_context_id
     }
+    pub fn user_creation_ts(&self) -> DateTime<Utc> {
+        self.user_creation_ts
+    }
+    pub fn experiment_display_context_creation_ts(&self) -> DateTime<Utc> {
+        self.experiment_display_context_creation_ts
+    }
 }
