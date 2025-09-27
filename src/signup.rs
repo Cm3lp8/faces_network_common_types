@@ -1,3 +1,4 @@
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
@@ -22,22 +23,28 @@ impl SignupData {
 pub struct SignupResponseData {
     username: String,
     unique_id: Uuid,
+    user_creation_ts: DateTime<Utc>,
     jwt: String,
     first_experiment_display_context_id: Uuid,
+    experiment_display_context_creation_ts: DateTime<Utc>,
 }
 
 impl SignupResponseData {
     pub fn new(
         username: &str,
         uuid: Uuid,
+        user_creation_ts: DateTime<Utc>,
         jwt: String,
         first_experiment_display_context_id: Uuid,
+        experiment_display_context_creation_ts: DateTime<Utc>,
     ) -> Self {
         Self {
             username: username.to_owned(),
             unique_id: uuid,
+            user_creation_ts,
             jwt,
             first_experiment_display_context_id,
+            experiment_display_context_creation_ts,
         }
     }
     pub fn id(&self) -> Uuid {
