@@ -23,14 +23,21 @@ pub struct SignupResponseData {
     username: String,
     unique_id: Uuid,
     jwt: String,
+    first_experiment_display_context_id: Uuid,
 }
 
 impl SignupResponseData {
-    pub fn new(username: &str, uuid: Uuid, jwt: String) -> Self {
+    pub fn new(
+        username: &str,
+        uuid: Uuid,
+        jwt: String,
+        first_experiment_display_context_id: Uuid,
+    ) -> Self {
         Self {
             username: username.to_owned(),
             unique_id: uuid,
             jwt,
+            first_experiment_display_context_id,
         }
     }
     pub fn id(&self) -> Uuid {
@@ -41,5 +48,8 @@ impl SignupResponseData {
     }
     pub fn jwt(&self) -> &str {
         self.jwt.as_str()
+    }
+    pub fn first_experiment_display_context_id(&self) -> Uuid {
+        self.first_experiment_display_context_id
     }
 }
