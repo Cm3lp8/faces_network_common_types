@@ -22,3 +22,21 @@ impl IntoBodyReq for SignupResponseData {
         ContentType::Json
     }
 }
+#[cfg(feature = "client-side")]
+impl IntoBodyReq for SigninData {
+    fn into_bytes(self) -> Vec<u8> {
+        serde_json::to_vec(&self).unwrap()
+    }
+    fn content_type(&self) -> ContentType {
+        ContentType::Json
+    }
+}
+#[cfg(feature = "client-side")]
+impl IntoBodyReq for SigninResponseData {
+    fn into_bytes(self) -> Vec<u8> {
+        serde_json::to_vec(&self).unwrap()
+    }
+    fn content_type(&self) -> ContentType {
+        ContentType::Json
+    }
+}
