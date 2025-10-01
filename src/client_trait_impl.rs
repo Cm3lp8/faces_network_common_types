@@ -1,4 +1,6 @@
 #[cfg(feature = "client-side")]
+use crate::UserLoginResponseErrorKind;
+#[cfg(feature = "client-side")]
 use crate::signin::SigninResponseData;
 #[cfg(feature = "client-side")]
 use crate::signup::SignupResponseData;
@@ -38,6 +40,15 @@ impl IntoBodyReq for SigninData {
 }
 #[cfg(feature = "client-side")]
 impl IntoBodyReq for SigninResponseData {
+    fn into_bytes(self) -> Vec<u8> {
+        serde_json::to_vec(&self).unwrap()
+    }
+    fn content_type(&self) -> ContentType {
+        ContentType::Json
+    }
+}
+#[cfg(feature = "client-side")]
+impl IntoBodyReq for UserLoginResponseErrorKind {
     fn into_bytes(self) -> Vec<u8> {
         serde_json::to_vec(&self).unwrap()
     }
