@@ -2,6 +2,8 @@ use crate::signup::SigninResponseData;
 #[cfg(feature = "client-side")]
 use crate::signup::SignupResponseData;
 
+#[cfg(feature = "client-side")]
+use super::SigninData;
 use super::SignupData;
 #[cfg(feature = "client-side")]
 use faces_quic_client::{ContentType, IntoBodyReq};
