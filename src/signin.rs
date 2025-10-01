@@ -3,11 +3,11 @@ use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct SignupData {
+pub struct SigninData {
     username: String,
     password: String,
 }
-impl SignupData {
+impl SigninData {
     pub fn new(username: String, password: String) -> Self {
         Self { username, password }
     }
@@ -20,7 +20,7 @@ impl SignupData {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct SignupResponseData {
+pub struct SigninResponseData {
     username: String,
     unique_id: Uuid,
     user_creation_ts: DateTime<Utc>,
@@ -29,7 +29,7 @@ pub struct SignupResponseData {
     experiment_display_context_creation_ts: DateTime<Utc>,
 }
 
-impl SignupResponseData {
+impl SigninResponseData {
     pub fn new(
         username: &str,
         uuid: Uuid,
