@@ -1,3 +1,4 @@
+use crate::signup::SigninResponseData;
 #[cfg(feature = "client-side")]
 use crate::signup::SignupResponseData;
 
