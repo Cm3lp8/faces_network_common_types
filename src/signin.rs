@@ -58,10 +58,13 @@ impl SigninResponseData {
     pub fn jwt(&self) -> &str {
         self.jwt.as_str()
     }
-    pub fn user_display_contexts(&self) -> &[UserDisplayContext] {
-        &self.user_display_contexts
+    pub fn take_user_display_contexts(&mut self) -> Vec<UserDisplayContext> {
+        std::mem::take(&mut self.user_display_contexts)
     }
-    pub fn user_peer_infos(&self) -> &[UserPeersInfos] {
-        &self.user_peer_infos
+    pub fn user_peer_infos(&mut self) -> Vec<UserPeersInfos> {
+        std::mem::take(&mut self.user_peer_infos)
+    }
+    pub fn user_creation_ts(&self) -> DateTime<Utc> {
+        self.user_creation_ts
     }
 }
