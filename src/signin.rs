@@ -2,6 +2,8 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
+use crate::{UserDisplayContext, UserPeersInfos};
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SigninData {
     username: String,
@@ -25,8 +27,8 @@ pub struct SigninResponseData {
     unique_id: Uuid,
     user_creation_ts: DateTime<Utc>,
     jwt: String,
-    first_experiment_display_context_id: Uuid,
-    experiment_display_context_creation_ts: DateTime<Utc>,
+    user_display_contexts: Vec<UserDisplayContext>,
+    user_peer_infos: Vec<UserPeersInfos>,
 }
 
 impl SigninResponseData {
@@ -35,16 +37,16 @@ impl SigninResponseData {
         uuid: Uuid,
         user_creation_ts: DateTime<Utc>,
         jwt: String,
-        first_experiment_display_context_id: Uuid,
-        experiment_display_context_creation_ts: DateTime<Utc>,
+        user_display_contexts: Vec<UserDisplayContext>,
+        user_peer_infos: Vec<UserPeersInfos>,
     ) -> Self {
         Self {
             username: username.to_owned(),
             unique_id: uuid,
             user_creation_ts,
             jwt,
-            first_experiment_display_context_id,
-            experiment_display_context_creation_ts,
+            user_display_contexts,
+            user_peer_infos,
         }
     }
     pub fn id(&self) -> Uuid {
@@ -56,13 +58,10 @@ impl SigninResponseData {
     pub fn jwt(&self) -> &str {
         self.jwt.as_str()
     }
-    pub fn first_experiment_display_context_id(&self) -> Uuid {
-        self.first_experiment_display_context_id
+    pub fn user_display_contexts(&self) -> &[UserDisplayContext] {
+        &self.user_display_contexts
     }
-    pub fn user_creation_ts(&self) -> DateTime<Utc> {
-        self.user_creation_ts
-    }
-    pub fn experiment_display_context_creation_ts(&self) -> DateTime<Utc> {
-        self.experiment_display_context_creation_ts
+    pub fn user_peer_infos(&self) -> &[UserPeersInfos] {
+        &self.user_peer_infos
     }
 }

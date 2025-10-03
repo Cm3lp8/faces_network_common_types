@@ -57,14 +57,32 @@ pub struct UserPeersInfos {
     peer_id: Uuid,
     username: String,
     created_at: DateTime<Utc>,
+    context_participation: Vec<PeerContextParticipation>,
 }
 
 impl UserPeersInfos {
-    pub fn new(peer_id: Uuid, username: String, created_at: DateTime<Utc>) -> Self {
+    pub fn new(
+        peer_id: Uuid,
+        username: String,
+        created_at: DateTime<Utc>,
+        context_participation: Vec<PeerContextParticipation>,
+    ) -> Self {
         Self {
             peer_id,
             username,
             created_at,
+            context_participation,
         }
+    }
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct PeerContextParticipation {
+    context_id: Uuid,
+}
+
+impl PeerContextParticipation {
+    pub fn new(context_id: Uuid) -> Self {
+        Self { context_id }
     }
 }
