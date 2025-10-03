@@ -61,7 +61,7 @@ impl SigninResponseData {
     pub fn take_user_display_contexts(&mut self) -> Vec<UserDisplayContext> {
         std::mem::take(&mut self.user_display_contexts)
     }
-    pub fn user_peer_infos(&mut self) -> Vec<UserPeersInfos> {
+    pub fn take_user_peer_infos(&mut self) -> Vec<UserPeersInfos> {
         std::mem::take(&mut self.user_peer_infos)
     }
     pub fn user_creation_ts(&self) -> DateTime<Utc> {
