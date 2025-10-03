@@ -52,3 +52,19 @@ impl ToUserContextKind for &str {
         }
     }
 }
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct UserPeersInfos {
+    peer_id: Uuid,
+    username: String,
+    created_at: DateTime<Utc>,
+}
+
+impl UserPeersInfos {
+    pub fn new(peer_id: Uuid, username: String, created_at: DateTime<Utc>) -> Self {
+        Self {
+            peer_id,
+            username,
+            created_at,
+        }
+    }
+}

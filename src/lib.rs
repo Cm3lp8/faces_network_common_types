@@ -9,4 +9,4 @@ pub use error_types::*;
 pub use signin::SigninData;
 pub use signup::SignupData;
 
-pub use db_data_types::{ToUserContextKind, UserContextKind, UserDisplayContext};
+pub use db_data_types::{ToUserContextKind, UserContextKind, UserDisplayContext, UserPeersInfos};
