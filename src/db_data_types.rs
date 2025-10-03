@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use crate::faces_network_errors::FNtwrkCommonTypesErrors;
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, Deserialize, Hash, PartialEq, Clone)]
 pub struct UserDisplayContext {
     context_id: Uuid,
     author_id: Uuid,
@@ -27,7 +27,7 @@ impl UserDisplayContext {
         }
     }
 }
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, Deserialize, Clone, Hash, PartialEq)]
 pub enum UserContextKind {
     Experiment,
     Conversation,
@@ -52,7 +52,7 @@ impl ToUserContextKind for &str {
         }
     }
 }
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, Hash, PartialEq, Deserialize, Clone)]
 pub struct UserPeersInfos {
     peer_id: Uuid,
     username: String,
@@ -76,7 +76,7 @@ impl UserPeersInfos {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Hash, PartialEq, Serialize, Deserialize, Clone)]
 pub struct PeerContextParticipation {
     context_id: Uuid,
 }
