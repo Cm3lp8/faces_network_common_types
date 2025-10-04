@@ -36,7 +36,7 @@ impl UserDisplayContext {
     pub fn context_kind(&self) -> UserContextKind {
         self.context_kind
     }
-    pub fn create_at(&self) -> DateTime<Utc> {
+    pub fn created_at(&self) -> DateTime<Utc> {
         self.created_at
     }
 }
