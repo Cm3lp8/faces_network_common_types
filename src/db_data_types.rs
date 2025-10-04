@@ -95,6 +95,18 @@ impl UserPeersInfos {
             context_participation,
         }
     }
+    pub fn peer_id(&self) -> Uuid {
+        self.peer_id
+    }
+    pub fn username(&self) -> &str {
+        &self.username
+    }
+    pub fn created_at(&self) -> DateTime<Utc> {
+        self.created_at
+    }
+    pub fn context_participation(&self) -> &[PeerContextParticipation] {
+        &self.context_participation
+    }
 }
 
 #[derive(Debug, Hash, PartialEq, Eq, Serialize, Deserialize, Clone)]
@@ -105,5 +117,8 @@ pub struct PeerContextParticipation {
 impl PeerContextParticipation {
     pub fn new(context_id: Uuid) -> Self {
         Self { context_id }
+    }
+    pub fn context_id(&self) -> Uuid {
+        self.context_id
     }
 }
