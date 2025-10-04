@@ -26,8 +26,21 @@ impl UserDisplayContext {
             created_at,
         }
     }
+
+    pub fn context_id(&self) -> Uuid {
+        self.context_id
+    }
+    pub fn author_id(&self) -> Uuid {
+        self.author_id
+    }
+    pub fn context_kind(&self) -> UserContextKind {
+        self.context_kind
+    }
+    pub fn create_at(&self) -> DateTime<Utc> {
+        self.created_at
+    }
 }
-#[derive(Debug, Serialize, Deserialize, Clone, Hash, PartialEq, Eq)]
+#[derive(Debug, Serialize, Deserialize, Clone, Copy, Hash, PartialEq, Eq)]
 pub enum UserContextKind {
     Experiment,
     Conversation,
