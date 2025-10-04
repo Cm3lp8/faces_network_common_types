@@ -45,6 +45,14 @@ pub enum UserContextKind {
     Experiment,
     Conversation,
 }
+impl UserContextKind {
+    pub fn to_string(&self) -> String {
+        match self {
+            UserContextKind::Experiment => EXPERIMENT_CONTEXT_KIND.to_string(),
+            UserContextKind::Conversation => CONVERSATION_CONTEXT_KIND.to_string(),
+        }
+    }
+}
 
 const EXPERIMENT_CONTEXT_KIND: &'static str = "experiment";
 const CONVERSATION_CONTEXT_KIND: &'static str = "conversation";
