@@ -1,6 +1,8 @@
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
+use crate::UserContextKind;
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SyncNewAnim {
     anim_id: Uuid,
@@ -11,7 +13,7 @@ pub struct SyncNewAnim {
     frame_height: u32,
     jwt: String,
     animation_context_id: Uuid,
-    creation_context_kind: String,
+    creation_context_kind: UserContextKind,
 }
 impl SyncNewAnim {
     pub fn new(
@@ -23,7 +25,7 @@ impl SyncNewAnim {
         frame_height: u32,
         jwt: String,
         animation_context_id: Uuid,
-        creation_context_kind: String,
+        creation_context_kind: UserContextKind,
     ) -> Self {
         Self {
             anim_id,
