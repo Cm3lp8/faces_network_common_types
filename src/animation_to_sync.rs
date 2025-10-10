@@ -40,3 +40,13 @@ impl SyncNewAnim {
         }
     }
 }
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SyncNewAnimResponse {
+    code: usize,
+}
+impl SyncNewAnimResponse {
+    pub fn new_with_code(code: usize) -> Self {
+        Self { code }
+    }
+}
