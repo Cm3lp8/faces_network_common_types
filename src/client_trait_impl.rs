@@ -1,6 +1,10 @@
 #[cfg(feature = "client-side")]
 use crate::UserLoginResponseErrorKind;
 #[cfg(feature = "client-side")]
+use crate::animation_to_sync::SyncNewAnim;
+#[cfg(feature = "client-side")]
+use crate::animation_to_sync::SyncNewAnim;
+#[cfg(feature = "client-side")]
 use crate::signin::SigninResponseData;
 #[cfg(feature = "client-side")]
 use crate::signup::SignupResponseData;
@@ -11,6 +15,15 @@ use super::SigninData;
 use super::SignupData;
 #[cfg(feature = "client-side")]
 use faces_quic_client::{ContentType, IntoBodyReq};
+#[cfg(feature = "client-side")]
+impl IntoBodyReq for SyncNewAnim {
+    fn into_bytes(self) -> Vec<u8> {
+        serde_json::to_vec(&self).unwrap()
+    }
+    fn content_type(&self) -> ContentType {
+        ContentType::Json
+    }
+}
 #[cfg(feature = "client-side")]
 impl IntoBodyReq for SignupData {
     fn into_bytes(self) -> Vec<u8> {
