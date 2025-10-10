@@ -39,6 +39,19 @@ impl SyncNewAnim {
             creation_context_kind,
         }
     }
+
+    pub fn anim_id(&self) -> Uuid {
+        self.anim_id
+    }
+    pub fn author_id(&self) -> Uuid {
+        self.author_id
+    }
+    pub fn data_len(&self) -> usize {
+        self.data.len()
+    }
+    pub fn as_slice(&self) -> &[u8] {
+        &self.data[..]
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
