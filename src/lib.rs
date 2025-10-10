@@ -10,4 +10,5 @@ pub use error_types::*;
 pub use signin::SigninData;
 pub use signup::SignupData;
 
+pub use animation_to_sync::*;
 pub use db_data_types::{ToUserContextKind, UserContextKind, UserDisplayContext, UserPeersInfos};
