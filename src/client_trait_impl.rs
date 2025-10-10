@@ -3,8 +3,6 @@ use crate::UserLoginResponseErrorKind;
 #[cfg(feature = "client-side")]
 use crate::animation_to_sync::SyncNewAnim;
 #[cfg(feature = "client-side")]
-use crate::animation_to_sync::SyncNewAnim;
-#[cfg(feature = "client-side")]
 use crate::signin::SigninResponseData;
 #[cfg(feature = "client-side")]
 use crate::signup::SignupResponseData;
