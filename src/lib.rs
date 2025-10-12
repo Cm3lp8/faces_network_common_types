@@ -12,5 +12,6 @@ pub use signin::SigninData;
 pub use signup::SignupData;
 
 pub use animation_to_sync::*;
-pub use context_version::*;
+pub use context_version::ServerContextVersion;
+
 pub use db_data_types::{ToUserContextKind, UserContextKind, UserDisplayContext, UserPeersInfos};

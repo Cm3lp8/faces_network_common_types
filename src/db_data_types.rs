@@ -10,6 +10,7 @@ pub struct UserDisplayContext {
     author_id: Uuid,
     context_kind: UserContextKind,
     created_at: DateTime<Utc>,
+    server_context_version: u64,
 }
 
 impl UserDisplayContext {
@@ -18,12 +19,14 @@ impl UserDisplayContext {
         author_id: Uuid,
         context_kind: UserContextKind,
         created_at: DateTime<Utc>,
+        server_context_version: u64,
     ) -> Self {
         Self {
             context_id,
             author_id,
             context_kind,
             created_at,
+            server_context_version,
         }
     }
 
@@ -38,6 +41,9 @@ impl UserDisplayContext {
     }
     pub fn created_at(&self) -> DateTime<Utc> {
         self.created_at
+    }
+    pub fn server_context_version(&self) -> u64 {
+        self.server_context_version
     }
 }
 #[derive(Debug, Serialize, Deserialize, Clone, Copy, Hash, PartialEq, Eq)]
