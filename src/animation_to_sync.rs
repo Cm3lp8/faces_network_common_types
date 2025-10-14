@@ -1,24 +1,50 @@
+use bincode::{
+    BorrowDecode, Decode, Encode,
+    de::Decoder,
+    enc::Encoder,
+    error::{DecodeError, EncodeError},
+};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
+#[derive(Clone, Debug, Deserialize, Serialize)]
+struct MyUuid(Uuid);
 use crate::UserContextKind;
+/*
+impl Encode for MyUuid {
+    fn encode<E: Encoder>(&self, enc: &mut E) -> Result<(), EncodeError> {
+        self.0.as_bytes().encode(enc)
+    }
+}
+impl<Context> Decode<Context> for MyUuid {
+    fn decode<D: Decoder<Context = Context>>(dec: &mut D) -> Result<Self, DecodeError> {
+        let bytes: [u8; 16] = <[u8; 16] as Decode<Context>>::decode(dec)?;
+        Ok(MyUuid(Uuid::from_bytes(bytes)))
+    }
+}
+impl BorrowDecode<'de, Context>: Sized for MyUuid {
 
+}
 /// [`SyncNewAnim`] represente an Animation. It is used when syncing an animation with distant db.
+*/
 /// As for all animation representation, x and u pos are normalized. (0.0 > 1.0)
-#[derive(Debug, Clone, Serialize, Deserialize)]
+
+// [u8;16 are uuid]
+#[derive(Debug, Clone, Serialize, Deserialize, Decode, Encode)]
 pub struct SyncNewAnim {
-    anim_id: Uuid,
-    author_id: Uuid,
+    anim_id: [u8; 16],
+    author_id: [u8; 16],
     data: Vec<u8>,
     fps: usize,
     frame_width: u32,
     frame_height: u32,
     jwt: String,
-    animation_context_id: Uuid,
+    animation_context_id: [u8; 16],
     creation_context_kind: UserContextKind,
     x_pos: f32,
     y_pos: f32,
 }
+
 impl SyncNewAnim {
     pub fn new(
         anim_id: Uuid,
@@ -34,14 +60,14 @@ impl SyncNewAnim {
         y_pos: f32,
     ) -> Self {
         Self {
-            anim_id,
-            author_id,
+            anim_id: anim_id.into_bytes(),
+            author_id: author_id.into_bytes(),
             data,
             fps,
             frame_width,
             frame_height,
             jwt,
-            animation_context_id,
+            animation_context_id: animation_context_id.into_bytes(),
             creation_context_kind,
             x_pos,
             y_pos,
@@ -49,13 +75,13 @@ impl SyncNewAnim {
     }
 
     pub fn anim_id(&self) -> Uuid {
-        self.anim_id
+        Uuid::from_bytes(self.anim_id)
     }
     pub fn pos(&self) -> (f32, f32) {
         (self.x_pos, self.y_pos)
     }
     pub fn author_id(&self) -> Uuid {
-        self.author_id
+        Uuid::from_bytes(self.author_id)
     }
     pub fn data_len(&self) -> usize {
         self.data.len()
@@ -64,7 +90,7 @@ impl SyncNewAnim {
         &self.data[..]
     }
     pub fn context_id(&self) -> Uuid {
-        self.animation_context_id
+        Uuid::from_bytes(self.animation_context_id)
     }
 }
 

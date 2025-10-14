@@ -1,3 +1,4 @@
+use bincode::{Decode, Encode};
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
@@ -46,7 +47,7 @@ impl UserDisplayContext {
         self.server_context_version
     }
 }
-#[derive(Debug, Serialize, Deserialize, Clone, Copy, Hash, PartialEq, Eq)]
+#[derive(Debug, Serialize, Deserialize, Clone, Copy, Hash, PartialEq, Eq, Encode, Decode)]
 pub enum UserContextKind {
     Experiment,
     Conversation,

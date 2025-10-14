@@ -15,5 +15,6 @@ serde_json = "1.0.145"
 faces_quic_client = { git = "https://github.com/Cm3lp8/faces-quic-client.git", optional = true}
 uuid = {version = "1.18.1", features = ["v4", "v7", "serde"]}
 chrono = {version="0.4.42", features=["serde"]}
+bincode = { version="2.0.1", features=["serde", "derive"]}
 
 
