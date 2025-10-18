@@ -29,7 +29,7 @@ pub struct PulledContextVersionWithAnimationDelta {
     animation_delta: AnimationDeltaCollection,
 }
 impl PulledContextVersionWithAnimationDelta {
-    pub fn new(context_id: Uuid, animations_delta: Option<&[Uuid]>) -> Self {
+    pub fn new(context_id: Uuid, animations_delta: Option<Vec<Uuid>>) -> Self {
         let animation_delta: AnimationDeltaCollection = match animations_delta {
             Some(coll) => AnimationDeltaCollection::AnimationDelta {
                 ids_collection: coll.iter().map(|it| it.into_bytes()).collect(),
