@@ -25,9 +25,26 @@ impl<Context> Decode<Context> for MyUuid {
 impl BorrowDecode<'de, Context>: Sized for MyUuid {
 
 }
+
+#[derive(Debug, Clone, Serialize, Deserialize, Decode, Encode)]
 /// [`SyncNewAnim`] represente an Animation. It is used when syncing an animation with distant db.
 */
 /// As for all animation representation, x and u pos are normalized. (0.0 > 1.0)
+
+#[derive(Debug, Clone, Serialize, Deserialize, Decode, Encode)]
+pub struct FetchAnimationToSyncWithItsContext {
+    anim: SyncNewAnim,
+    anim_variable_context: AnimVariableContext,
+}
+
+impl FetchAnimationToSyncWithItsContext {
+    pub fn new(anim: SyncNewAnim, anim_variable_context: AnimVariableContext) -> Self {
+        Self {
+            anim,
+            anim_variable_context,
+        }
+    }
+}
 
 // [u8;16 are uuid]
 #[derive(Debug, Clone, Serialize, Deserialize, Decode, Encode)]
