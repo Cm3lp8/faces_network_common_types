@@ -1,5 +1,6 @@
 pub mod animation_to_sync;
 mod client_trait_impl;
+pub mod context_sync;
 pub mod context_version;
 pub mod db_data_types;
 pub mod error_types;
