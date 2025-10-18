@@ -38,7 +38,7 @@ pub struct SyncNewAnim {
     fps: usize,
     frame_width: u32,
     frame_height: u32,
-    jwt: String,
+    jwt: String, // TODO not the place of the jwt
     animation_context_id: [u8; 16],
     creation_context_kind: UserContextKind,
     x_pos: f32,
@@ -94,6 +94,34 @@ impl SyncNewAnim {
     }
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize, Encode, Decode)]
+pub struct AnimVariableContext {
+    anim_id: [u8; 16],
+    context_id: [u8; 16],
+    context_version: u64,
+    variable_context_version: u64,
+    x_pos: f32,
+    y_pos: f32,
+}
+impl AnimVariableContext {
+    pub fn new(
+        anim_id: Uuid,
+        context_id: Uuid,
+        context_version: u64,
+        variable_context_version: u64,
+        x_pos: f32,
+        y_pos: f32,
+    ) -> Self {
+        Self {
+            anim_id: anim_id.into_bytes(),
+            context_id: context_id.into_bytes(),
+            context_version,
+            variable_context_version,
+            x_pos,
+            y_pos,
+        }
+    }
+}
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SyncNewAnimResponse {
     code: usize,
