@@ -103,3 +103,28 @@ impl SyncNewAnimResponse {
         Self { code }
     }
 }
+
+#[derive(Debug, Clone, Serialize, Deserialize, Encode, Decode)]
+pub struct AnimationRefToFetch {
+    anim_id: [u8; 16],
+    context_id: [u8; 16],
+    user_id: [u8; 16],
+}
+impl AnimationRefToFetch {
+    pub fn new(anim_id: Uuid, context_id: Uuid, user_id: Uuid) -> Self {
+        Self {
+            anim_id: anim_id.into_bytes(),
+            context_id: context_id.into_bytes(),
+            user_id: user_id.into_bytes(),
+        }
+    }
+    pub fn anim_id(&self) -> Uuid {
+        Uuid::from_bytes(self.anim_id)
+    }
+    pub fn context_id(&self) -> Uuid {
+        Uuid::from_bytes(self.context_id)
+    }
+    pub fn user_id(&self) -> Uuid {
+        Uuid::from_bytes(self.user_id)
+    }
+}
