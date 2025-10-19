@@ -115,6 +115,18 @@ impl SyncNewAnim {
     pub fn context_id(&self) -> Uuid {
         Uuid::from_bytes(self.animation_context_id)
     }
+    pub fn frame_width(&self) -> u32 {
+        self.frame_width
+    }
+    pub fn frame_height(&self) -> u32 {
+        self.frame_height
+    }
+    pub fn fps(&self) -> usize {
+        self.fps
+    }
+    pub fn take_data(&mut self) -> Vec<u8> {
+        std::mem::take(&mut self.data)
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Encode, Decode)]
@@ -123,6 +135,7 @@ pub struct AnimVariableContext {
     context_id: [u8; 16],
     context_version: u64,
     variable_context_version: u64,
+    //context_kind:
     x_pos: f32,
     y_pos: f32,
 }
