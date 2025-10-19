@@ -157,6 +157,9 @@ impl AnimVariableContext {
             y_pos,
         }
     }
+    pub fn pos(&self) -> [f32; 2] {
+        [self.x_pos, self.y_pos]
+    }
 }
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SyncNewAnimResponse {
