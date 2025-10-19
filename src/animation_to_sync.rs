@@ -129,8 +129,10 @@ impl SyncNewAnim {
     }
 }
 
+// TODO add these {user_id, contextkind};
 #[derive(Debug, Clone, Serialize, Deserialize, Encode, Decode)]
 pub struct AnimVariableContext {
+    //user_id: [u8;16],
     anim_id: [u8; 16],
     context_id: [u8; 16],
     context_version: u64,
