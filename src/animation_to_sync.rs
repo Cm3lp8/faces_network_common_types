@@ -160,6 +160,18 @@ impl AnimVariableContext {
     pub fn pos(&self) -> [f32; 2] {
         [self.x_pos, self.y_pos]
     }
+    pub fn context_id(&self) -> Uuid {
+        Uuid::from_bytes(self.context_id)
+    }
+    pub fn anim_id(&self) -> Uuid {
+        Uuid::from_bytes(self.anim_id)
+    }
+    pub fn variable_context_version(&self) -> u64 {
+        self.variable_context_version
+    }
+    pub fn context_version(&self) -> u64 {
+        self.context_version
+    }
 }
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SyncNewAnimResponse {
