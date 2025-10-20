@@ -58,14 +58,9 @@ pub struct SyncNewAnim {
     anim_id: [u8; 16],
     author_id: [u8; 16],
     data: Vec<u8>,
-    fps: usize,
+    fps: u8,
     frame_width: u32,
     frame_height: u32,
-    jwt: String, // TODO not the place of the jwt
-    animation_context_id: [u8; 16],
-    creation_context_kind: UserContextKind,
-    x_pos: f32,
-    y_pos: f32,
 }
 
 impl SyncNewAnim {
@@ -73,14 +68,9 @@ impl SyncNewAnim {
         anim_id: Uuid,
         author_id: Uuid,
         data: Vec<u8>,
-        fps: usize,
+        fps: u8,
         frame_width: u32,
         frame_height: u32,
-        jwt: String,
-        animation_context_id: Uuid,
-        creation_context_kind: UserContextKind,
-        x_pos: f32,
-        y_pos: f32,
     ) -> Self {
         Self {
             anim_id: anim_id.into_bytes(),
@@ -89,19 +79,11 @@ impl SyncNewAnim {
             fps,
             frame_width,
             frame_height,
-            jwt,
-            animation_context_id: animation_context_id.into_bytes(),
-            creation_context_kind,
-            x_pos,
-            y_pos,
         }
     }
 
     pub fn anim_id(&self) -> Uuid {
         Uuid::from_bytes(self.anim_id)
-    }
-    pub fn pos(&self) -> (f32, f32) {
-        (self.x_pos, self.y_pos)
     }
     pub fn author_id(&self) -> Uuid {
         Uuid::from_bytes(self.author_id)
@@ -112,16 +94,13 @@ impl SyncNewAnim {
     pub fn as_slice(&self) -> &[u8] {
         &self.data[..]
     }
-    pub fn context_id(&self) -> Uuid {
-        Uuid::from_bytes(self.animation_context_id)
-    }
     pub fn frame_width(&self) -> u32 {
         self.frame_width
     }
     pub fn frame_height(&self) -> u32 {
         self.frame_height
     }
-    pub fn fps(&self) -> usize {
+    pub fn fps(&self) -> u8 {
         self.fps
     }
     pub fn take_data(&mut self) -> Vec<u8> {
