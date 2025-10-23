@@ -7,6 +7,7 @@ pub mod error_types;
 pub mod faces_network_errors;
 pub mod signin;
 pub mod signup;
+pub mod stream_types;
 
 pub use error_types::*;
 pub use signin::SigninData;
@@ -17,3 +18,4 @@ pub use context_version::ServerContextVersion;
 
 pub use context_sync::*;
 pub use db_data_types::{ToUserContextKind, UserContextKind, UserDisplayContext, UserPeersInfos};
+pub use stream_types::*;
