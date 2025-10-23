@@ -5,6 +5,11 @@ use uuid::Uuid;
 pub struct UserStreamSessionInfo {
     user_id: Uuid,
 }
+impl UserStreamSessionInfo {
+    pub fn new(user_id: Uuid) -> Self {
+        Self { user_id }
+    }
+}
 
 // an Id field to make possible request confirmation when client responds
 pub enum StreamMessage {
