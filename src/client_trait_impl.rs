@@ -10,8 +10,6 @@ use crate::signin::SigninResponseData;
 use crate::signup::SignupResponseData;
 #[cfg(feature = "client-side")]
 use crate::stream_types::UserStreamSessionInfo;
-#[cfg(feature = "client-side")]
-use crate::stream_types::UserStreamSessionInfo;
 
 #[cfg(feature = "client-side")]
 use super::SigninData;
