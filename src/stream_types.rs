@@ -1,3 +1,4 @@
+use bincode::{Decode, Encode};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
@@ -12,8 +13,10 @@ impl UserStreamSessionInfo {
 }
 
 // an Id field to make possible request confirmation when client responds
+
+#[derive(Serialize, Deserialize, Encode, Decode)]
 pub enum StreamMessage {
-    ContactRequest { req_id: Uuid, peer_id: Uuid },
+    ContactRequest { req_id: [u8; 16], peer_id: [u8; 16] },
 }
 
 impl StreamMessage {
@@ -22,10 +25,20 @@ impl StreamMessage {
         (
             StreamMessageId { req_id },
             Self::ContactRequest {
-                req_id,
-                peer_id: peer_id,
+                req_id: req_id.into_bytes(),
+                peer_id: peer_id.into_bytes(),
             },
         )
+    }
+    pub fn get_request_id(&self) -> Uuid {
+        match self {
+            Self::ContactRequest { req_id, peer_id: _ } => Uuid::from_bytes(*req_id),
+        }
+    }
+    pub fn get_peer_id(&self) -> Uuid {
+        match self {
+            Self::ContactRequest { req_id: _, peer_id } => Uuid::from_bytes(*peer_id),
+        }
     }
 }
 
