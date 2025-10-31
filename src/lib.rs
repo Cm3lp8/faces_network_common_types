@@ -5,6 +5,7 @@ pub mod context_version;
 pub mod db_data_types;
 pub mod error_types;
 pub mod faces_network_errors;
+pub mod invitation;
 pub mod signin;
 pub mod signup;
 pub mod stream_types;
@@ -18,4 +19,7 @@ pub use context_version::ServerContextVersion;
 
 pub use context_sync::*;
 pub use db_data_types::{ToUserContextKind, UserContextKind, UserDisplayContext, UserPeersInfos};
+pub use faces_quic_server::prelude::StreamMessageCapsule;
+
+pub use invitation::*;
 pub use stream_types::*;
