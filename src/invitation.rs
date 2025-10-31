@@ -1,7 +1,7 @@
 use bincode::{Decode, Encode};
 use uuid::Uuid;
 
-#[derive(Decode, Encode)]
+#[derive(Decode, Encode, Debug)]
 pub struct PeerInvitationByTextHandle {
     emitting_user_id: [u8; 16],
     peer_username_handle: String,
