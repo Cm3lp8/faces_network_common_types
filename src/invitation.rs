@@ -1,6 +1,8 @@
 use bincode::{Decode, Encode};
 use uuid::Uuid;
 
+use crate::StreamMessage;
+
 #[derive(Decode, Encode, Debug)]
 pub struct PeerInvitationByTextHandle {
     emitting_user_id: [u8; 16],
@@ -18,5 +20,36 @@ impl PeerInvitationByTextHandle {
     }
     pub fn get_peer_username_handle(&self) -> &str {
         &self.peer_username_handle
+    }
+}
+pub struct InvitationMessage {
+    invitation_id: [u8; 16],
+    emitter_id: [u8; 16],
+    receiver_id: [u8; 16],
+}
+impl InvitationMessage {
+    pub fn new(invitation_id: Uuid, emitter_id: Uuid, receiver_id: Uuid) -> Self {
+        Self {
+            invitation_id: invitation_id.into_bytes(),
+            emitter_id: emitter_id.into_bytes(),
+            receiver_id: receiver_id.into_bytes(),
+        }
+    }
+    pub fn dest_id(&self) -> Uuid {
+        Uuid::from_bytes(self.receiver_id)
+    }
+    pub fn emitter_id(&self) -> Uuid {
+        Uuid::from_bytes(self.emitter_id)
+    }
+}
+
+impl From<InvitationMessage> for StreamMessage {
+    fn from(value: InvitationMessage) -> Self {
+        StreamMessage::InvitationRequest {
+            req_id: Uuid::now_v7().into_bytes(),
+            invitation_message_id: value.invitation_id,
+            emitter_id: value.emitter_id,
+            dest_id: value.receiver_id,
+        }
     }
 }

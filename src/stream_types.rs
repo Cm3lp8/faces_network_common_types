@@ -16,7 +16,16 @@ impl UserStreamSessionInfo {
 
 #[derive(Serialize, Deserialize, Encode, Decode, Clone)]
 pub enum StreamMessage {
-    ContactRequest { req_id: [u8; 16], peer_id: [u8; 16] },
+    InvitationRequest {
+        req_id: [u8; 16],
+        invitation_message_id: [u8; 16],
+        emitter_id: [u8; 16],
+        dest_id: [u8; 16],
+    },
+    ContactRequest {
+        req_id: [u8; 16],
+        peer_id: [u8; 16],
+    },
 }
 
 impl StreamMessage {
@@ -30,14 +39,42 @@ impl StreamMessage {
             },
         )
     }
+    pub fn new_invitation_request(
+        invitation_message_id: Uuid,
+        emitter_id: Uuid,
+        dest_id: Uuid,
+    ) -> (StreamMessageId, Self) {
+        let req_id = Uuid::now_v7();
+        (
+            StreamMessageId { req_id },
+            Self::InvitationRequest {
+                req_id: req_id.into_bytes(),
+                invitation_message_id: invitation_message_id.into_bytes(),
+                emitter_id: emitter_id.into_bytes(),
+                dest_id: dest_id.into_bytes(),
+            },
+        )
+    }
     pub fn get_request_id(&self) -> Uuid {
         match self {
-            Self::ContactRequest { req_id, peer_id: _ } => Uuid::from_bytes(*req_id),
+            Self::ContactRequest { req_id, peer_id: _ }
+            | Self::InvitationRequest {
+                req_id,
+                invitation_message_id: _,
+                emitter_id: _,
+                dest_id: _,
+            } => Uuid::from_bytes(*req_id),
         }
     }
     pub fn get_peer_id(&self) -> Uuid {
         match self {
             Self::ContactRequest { req_id: _, peer_id } => Uuid::from_bytes(*peer_id),
+            Self::InvitationRequest {
+                req_id: _,
+                invitation_message_id: _,
+                emitter_id: _,
+                dest_id,
+            } => Uuid::from_bytes(*dest_id),
         }
     }
 }
