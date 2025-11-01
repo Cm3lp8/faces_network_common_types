@@ -14,7 +14,7 @@ impl UserStreamSessionInfo {
 
 // an Id field to make possible request confirmation when client responds
 
-#[derive(Serialize, Deserialize, Encode, Decode, Clone)]
+#[derive(Serialize, Debug, Deserialize, Encode, Decode, Clone)]
 pub enum StreamMessage {
     InvitationRequest {
         req_id: [u8; 16],
