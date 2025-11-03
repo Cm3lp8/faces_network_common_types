@@ -25,13 +25,20 @@ impl PeerInvitationByTextHandle {
 pub struct InvitationMessage {
     invitation_id: [u8; 16],
     emitter_id: [u8; 16],
+    emitter_name: String,
     receiver_id: [u8; 16],
 }
 impl InvitationMessage {
-    pub fn new(invitation_id: Uuid, emitter_id: Uuid, receiver_id: Uuid) -> Self {
+    pub fn new(
+        invitation_id: Uuid,
+        emitter_id: Uuid,
+        emitter_name: &str,
+        receiver_id: Uuid,
+    ) -> Self {
         Self {
             invitation_id: invitation_id.into_bytes(),
             emitter_id: emitter_id.into_bytes(),
+            emitter_name: emitter_name.to_string(),
             receiver_id: receiver_id.into_bytes(),
         }
     }
@@ -49,6 +56,7 @@ impl From<InvitationMessage> for StreamMessage {
             req_id: Uuid::now_v7().into_bytes(),
             invitation_message_id: value.invitation_id,
             emitter_id: value.emitter_id,
+            emitter_name: value.emitter_name,
             dest_id: value.receiver_id,
         }
     }

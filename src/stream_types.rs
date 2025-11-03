@@ -20,6 +20,7 @@ pub enum StreamMessage {
         req_id: [u8; 16],
         invitation_message_id: [u8; 16],
         emitter_id: [u8; 16],
+        emitter_name: String,
         dest_id: [u8; 16],
     },
     ContactRequest {
@@ -42,6 +43,7 @@ impl StreamMessage {
     pub fn new_invitation_request(
         invitation_message_id: Uuid,
         emitter_id: Uuid,
+        emitter_name: &str,
         dest_id: Uuid,
     ) -> (StreamMessageId, Self) {
         let req_id = Uuid::now_v7();
@@ -51,6 +53,7 @@ impl StreamMessage {
                 req_id: req_id.into_bytes(),
                 invitation_message_id: invitation_message_id.into_bytes(),
                 emitter_id: emitter_id.into_bytes(),
+                emitter_name: emitter_name.to_string(),
                 dest_id: dest_id.into_bytes(),
             },
         )
@@ -62,6 +65,7 @@ impl StreamMessage {
                 req_id,
                 invitation_message_id: _,
                 emitter_id: _,
+                emitter_name: _,
                 dest_id: _,
             } => Uuid::from_bytes(*req_id),
         }
@@ -73,6 +77,7 @@ impl StreamMessage {
                 req_id: _,
                 invitation_message_id: _,
                 emitter_id: _,
+                emitter_name: _,
                 dest_id,
             } => Uuid::from_bytes(*dest_id),
         }
