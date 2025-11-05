@@ -1,4 +1,5 @@
 use bincode::{Decode, Encode};
+use chrono::{DateTime, Utc};
 use uuid::Uuid;
 
 use crate::StreamMessage;
@@ -27,6 +28,7 @@ pub struct InvitationMessage {
     emitter_id: [u8; 16],
     emitter_name: String,
     receiver_id: [u8; 16],
+    ts: DateTime<Utc>,
 }
 impl InvitationMessage {
     pub fn new(
@@ -40,6 +42,7 @@ impl InvitationMessage {
             emitter_id: emitter_id.into_bytes(),
             emitter_name: emitter_name.to_string(),
             receiver_id: receiver_id.into_bytes(),
+            ts: Utc::now(),
         }
     }
     pub fn dest_id(&self) -> Uuid {
@@ -58,6 +61,7 @@ impl From<InvitationMessage> for StreamMessage {
             emitter_id: value.emitter_id,
             emitter_name: value.emitter_name,
             dest_id: value.receiver_id,
+            ts: value.ts.timestamp(),
         }
     }
 }

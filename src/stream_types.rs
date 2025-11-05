@@ -1,4 +1,5 @@
 use bincode::{Decode, Encode};
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
@@ -22,10 +23,12 @@ pub enum StreamMessage {
         emitter_id: [u8; 16],
         emitter_name: String,
         dest_id: [u8; 16],
+        ts: i64, // utc timestamp
     },
     ContactRequest {
         req_id: [u8; 16],
         peer_id: [u8; 16],
+        ts: i64,
     },
 }
 
@@ -37,6 +40,7 @@ impl StreamMessage {
             Self::ContactRequest {
                 req_id: req_id.into_bytes(),
                 peer_id: peer_id.into_bytes(),
+                ts: Utc::now().timestamp(),
             },
         )
     }
@@ -55,30 +59,41 @@ impl StreamMessage {
                 emitter_id: emitter_id.into_bytes(),
                 emitter_name: emitter_name.to_string(),
                 dest_id: dest_id.into_bytes(),
+                ts: Utc::now().timestamp(),
             },
         )
     }
     pub fn get_request_id(&self) -> Uuid {
         match self {
-            Self::ContactRequest { req_id, peer_id: _ }
+            Self::ContactRequest {
+                req_id,
+                peer_id: _,
+                ts: _,
+            }
             | Self::InvitationRequest {
                 req_id,
                 invitation_message_id: _,
                 emitter_id: _,
                 emitter_name: _,
                 dest_id: _,
+                ts: _,
             } => Uuid::from_bytes(*req_id),
         }
     }
     pub fn get_peer_id(&self) -> Uuid {
         match self {
-            Self::ContactRequest { req_id: _, peer_id } => Uuid::from_bytes(*peer_id),
+            Self::ContactRequest {
+                req_id: _,
+                peer_id,
+                ts: _,
+            } => Uuid::from_bytes(*peer_id),
             Self::InvitationRequest {
                 req_id: _,
                 invitation_message_id: _,
                 emitter_id: _,
                 emitter_name: _,
                 dest_id,
+                ts: _,
             } => Uuid::from_bytes(*dest_id),
         }
     }
