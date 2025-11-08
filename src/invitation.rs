@@ -6,14 +6,16 @@ use crate::StreamMessage;
 
 #[derive(Decode, Encode, Debug)]
 pub struct InvitationResponse {
+    invitation_id: [u8; 16],
     responder_user_id: [u8; 16],
     kind: InvitationResponseKind,
     ts_utc: i64,
 }
 
 impl InvitationResponse {
-    pub fn new(user_id: Uuid, kind: InvitationResponseKind) -> Self {
+    pub fn new(invitation_uuid: Uuid, user_id: Uuid, kind: InvitationResponseKind) -> Self {
         Self {
+            invitation_id: invitation_uuid.into_bytes(),
             responder_user_id: user_id.into_bytes(),
             kind,
             ts_utc: Utc::now().timestamp(),
@@ -21,6 +23,9 @@ impl InvitationResponse {
     }
     pub fn user_id(&self) -> Uuid {
         Uuid::from_bytes(self.responder_user_id)
+    }
+    pub fn invitation_id(&self) -> Uuid {
+        Uuid::from_bytes(self.invitation_id)
     }
     pub fn get_timestamp(&self) -> Option<DateTime<Utc>> {
         DateTime::from_timestamp(self.ts_utc, 0)
@@ -102,9 +107,12 @@ mod invitation_test {
 
     use crate::{InvitationResponse, InvitationResponseKind};
 
+    #[test]
     fn invitation_response_end_to_end() {
         let user = Uuid::now_v7();
-        let new_invitation = InvitationResponse::new(user, InvitationResponseKind::Accepted);
+        let invitation_uuid = Uuid::now_v7();
+        let new_invitation =
+            InvitationResponse::new(invitation_uuid, user, InvitationResponseKind::Accepted);
 
         let Ok(encoded) = bincode::encode_to_vec(new_invitation, bincode::config::standard())
         else {
