@@ -76,7 +76,22 @@ pub struct InvitationMessage {
     ts: DateTime<Utc>,
 }
 impl InvitationMessage {
-    pub fn new_as_sender(
+    pub fn new_for_sender(
+        invitation_id: Uuid,
+        emitter_id: Uuid,
+        emitter_name: &str,
+        receiver_id: Uuid,
+    ) -> Self {
+        Self {
+            invitation_orientation: InvitationOrientation::AsSender,
+            invitation_id: invitation_id.into_bytes(),
+            emitter_id: emitter_id.into_bytes(),
+            emitter_name: emitter_name.to_string(),
+            receiver_id: receiver_id.into_bytes(),
+            ts: Utc::now(),
+        }
+    }
+    pub fn new_for_receiver(
         invitation_id: Uuid,
         emitter_id: Uuid,
         emitter_name: &str,
