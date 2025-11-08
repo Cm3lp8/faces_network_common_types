@@ -5,6 +5,35 @@ use uuid::Uuid;
 use crate::StreamMessage;
 
 #[derive(Decode, Encode, Debug)]
+pub struct InvitationResponse {
+    responder_user_id: [u8; 16],
+    kind: InvitationResponseKind,
+    ts_utc: i64,
+}
+
+impl InvitationResponse {
+    pub fn new(user_id: Uuid, kind: InvitationResponseKind) -> Self {
+        Self {
+            responder_user_id: user_id.into_bytes(),
+            kind,
+            ts_utc: Utc::now().timestamp(),
+        }
+    }
+    pub fn user_id(&self) -> Uuid {
+        Uuid::from_bytes(self.responder_user_id)
+    }
+    pub fn get_timestamp(&self) -> Option<DateTime<Utc>> {
+        DateTime::from_timestamp(self.ts_utc, 0)
+    }
+}
+
+#[derive(Decode, Encode, Debug)]
+pub enum InvitationResponseKind {
+    Accepted,
+    Refused,
+}
+
+#[derive(Decode, Encode, Debug)]
 pub struct PeerInvitationByTextHandle {
     emitting_user_id: [u8; 16],
     peer_username_handle: String,
@@ -63,5 +92,36 @@ impl From<InvitationMessage> for StreamMessage {
             dest_id: value.receiver_id,
             ts: value.ts.timestamp(),
         }
+    }
+}
+
+#[cfg(test)]
+mod invitation_test {
+    use bincode::{Decode, config::standard};
+    use uuid::Uuid;
+
+    use crate::{InvitationResponse, InvitationResponseKind};
+
+    fn invitation_response_end_to_end() {
+        let user = Uuid::now_v7();
+        let new_invitation = InvitationResponse::new(user, InvitationResponseKind::Accepted);
+
+        let Ok(encoded) = bincode::encode_to_vec(new_invitation, bincode::config::standard())
+        else {
+            assert!(false);
+            return;
+        };
+
+        let Ok((decoded, _)) = bincode::decode_from_slice::<InvitationResponse, _>(
+            &encoded,
+            bincode::config::standard(),
+        ) else {
+            assert!(false);
+            return;
+        };
+
+        let decoded_uuid = decoded.user_id();
+
+        assert!(user == decoded_uuid)
     }
 }
