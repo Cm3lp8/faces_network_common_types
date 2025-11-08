@@ -62,7 +62,7 @@ impl PeerInvitationByTextHandle {
     }
 }
 
-#[derive(Serialize, Debug, Deserialize, Encode, Decode, Clone, PartialEq, Eq)]
+#[derive(Serialize, Debug, Deserialize, Encode, Decode, Clone, PartialEq, Eq, Hash)]
 pub enum InvitationOrientation {
     AsSender,
     AsReceiver,
