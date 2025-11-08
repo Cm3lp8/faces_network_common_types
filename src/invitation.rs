@@ -68,61 +68,47 @@ pub enum InvitationOrientation {
     AsReceiver,
 }
 pub struct InvitationMessage {
-    invitation_orientation: InvitationOrientation,
     invitation_id: [u8; 16],
-    emitter_id: [u8; 16],
-    emitter_name: String,
-    receiver_id: [u8; 16],
+    inviter_id: [u8; 16],
+    inviter_name: String,
+    invitee_name: String,
+    invitee_id: [u8; 16],
     ts: DateTime<Utc>,
 }
 impl InvitationMessage {
-    pub fn new_for_sender(
+    pub fn new(
         invitation_id: Uuid,
         emitter_id: Uuid,
-        emitter_name: &str,
+        inviter_name: &str,
+        invitee_name: &str,
         receiver_id: Uuid,
     ) -> Self {
         Self {
-            invitation_orientation: InvitationOrientation::AsSender,
             invitation_id: invitation_id.into_bytes(),
-            emitter_id: emitter_id.into_bytes(),
-            emitter_name: emitter_name.to_string(),
-            receiver_id: receiver_id.into_bytes(),
+            inviter_id: emitter_id.into_bytes(),
+            inviter_name: inviter_name.to_string(),
+            invitee_name: invitee_name.to_string(),
+            invitee_id: receiver_id.into_bytes(),
             ts: Utc::now(),
         }
     }
-    pub fn new_for_receiver(
-        invitation_id: Uuid,
-        emitter_id: Uuid,
-        emitter_name: &str,
-        receiver_id: Uuid,
-    ) -> Self {
-        Self {
-            invitation_orientation: InvitationOrientation::AsSender,
-            invitation_id: invitation_id.into_bytes(),
-            emitter_id: emitter_id.into_bytes(),
-            emitter_name: emitter_name.to_string(),
-            receiver_id: receiver_id.into_bytes(),
-            ts: Utc::now(),
-        }
+    pub fn invitee_id(&self) -> Uuid {
+        Uuid::from_bytes(self.invitee_id)
     }
-    pub fn dest_id(&self) -> Uuid {
-        Uuid::from_bytes(self.receiver_id)
-    }
-    pub fn emitter_id(&self) -> Uuid {
-        Uuid::from_bytes(self.emitter_id)
+    pub fn inviter_id(&self) -> Uuid {
+        Uuid::from_bytes(self.inviter_id)
     }
 }
 
 impl From<InvitationMessage> for StreamMessage {
     fn from(value: InvitationMessage) -> Self {
         StreamMessage::InvitationRequest {
-            invitation_orientation: value.invitation_orientation,
             req_id: Uuid::now_v7().into_bytes(),
             invitation_message_id: value.invitation_id,
-            emitter_id: value.emitter_id,
-            emitter_name: value.emitter_name,
-            dest_id: value.receiver_id,
+            inviter_id: value.inviter_id,
+            inviter_name: value.inviter_name,
+            invitee_name: value.invitee_name,
+            invitee_id: value.invitee_id,
             ts: value.ts.timestamp(),
         }
     }
