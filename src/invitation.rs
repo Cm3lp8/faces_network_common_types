@@ -30,9 +30,12 @@ impl InvitationResponse {
     pub fn get_timestamp(&self) -> Option<DateTime<Utc>> {
         DateTime::from_timestamp(self.ts_utc, 0)
     }
+    pub fn invitation_response_kind(&self) -> InvitationResponseKind {
+        self.kind
+    }
 }
 
-#[derive(Decode, Encode, Debug)]
+#[derive(Decode, Encode, Debug, Clone, Copy)]
 pub enum InvitationResponseKind {
     Accepted,
     Refused,
