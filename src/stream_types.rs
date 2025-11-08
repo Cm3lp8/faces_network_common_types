@@ -3,6 +3,8 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
+use crate::InvitationOrientation;
+
 #[derive(Serialize, Deserialize)]
 pub struct UserStreamSessionInfo {
     user_id: Uuid,
@@ -18,6 +20,7 @@ impl UserStreamSessionInfo {
 #[derive(Serialize, Debug, Deserialize, Encode, Decode, Clone)]
 pub enum StreamMessage {
     InvitationRequest {
+        invitation_orientation: InvitationOrientation,
         req_id: [u8; 16],
         invitation_message_id: [u8; 16],
         emitter_id: [u8; 16],
@@ -82,7 +85,7 @@ impl StreamMessage {
             },
         )
     }
-    pub fn new_invitation_request(
+    pub fn new_invitation_request_for_sender(
         invitation_message_id: Uuid,
         emitter_id: Uuid,
         emitter_name: &str,
@@ -92,6 +95,27 @@ impl StreamMessage {
         (
             StreamMessageId { req_id },
             Self::InvitationRequest {
+                invitation_orientation: InvitationOrientation::AsSender,
+                req_id: req_id.into_bytes(),
+                invitation_message_id: invitation_message_id.into_bytes(),
+                emitter_id: emitter_id.into_bytes(),
+                emitter_name: emitter_name.to_string(),
+                dest_id: dest_id.into_bytes(),
+                ts: Utc::now().timestamp(),
+            },
+        )
+    }
+    pub fn new_invitation_request_for_receiver(
+        invitation_message_id: Uuid,
+        emitter_id: Uuid,
+        emitter_name: &str,
+        dest_id: Uuid,
+    ) -> (StreamMessageId, Self) {
+        let req_id = Uuid::now_v7();
+        (
+            StreamMessageId { req_id },
+            Self::InvitationRequest {
+                invitation_orientation: InvitationOrientation::AsReceiver,
                 req_id: req_id.into_bytes(),
                 invitation_message_id: invitation_message_id.into_bytes(),
                 emitter_id: emitter_id.into_bytes(),
@@ -109,6 +133,7 @@ impl StreamMessage {
                 ts: _,
             }
             | Self::InvitationRequest {
+                invitation_orientation: _,
                 req_id,
                 invitation_message_id: _,
                 emitter_id: _,
@@ -134,6 +159,7 @@ impl StreamMessage {
                 ts: _,
             } => Uuid::from_bytes(*peer_id),
             Self::InvitationRequest {
+                invitation_orientation: _,
                 req_id: _,
                 invitation_message_id: _,
                 emitter_id: _,

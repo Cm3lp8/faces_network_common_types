@@ -1,5 +1,6 @@
 use bincode::{Decode, Encode};
 use chrono::{DateTime, Utc};
+use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
 use crate::StreamMessage;
@@ -60,7 +61,14 @@ impl PeerInvitationByTextHandle {
         &self.peer_username_handle
     }
 }
+
+#[derive(Serialize, Debug, Deserialize, Encode, Decode, Clone)]
+pub enum InvitationOrientation {
+    AsSender,
+    AsReceiver,
+}
 pub struct InvitationMessage {
+    invitation_orientation: InvitationOrientation,
     invitation_id: [u8; 16],
     emitter_id: [u8; 16],
     emitter_name: String,
@@ -68,13 +76,14 @@ pub struct InvitationMessage {
     ts: DateTime<Utc>,
 }
 impl InvitationMessage {
-    pub fn new(
+    pub fn new_as_sender(
         invitation_id: Uuid,
         emitter_id: Uuid,
         emitter_name: &str,
         receiver_id: Uuid,
     ) -> Self {
         Self {
+            invitation_orientation: InvitationOrientation::AsSender,
             invitation_id: invitation_id.into_bytes(),
             emitter_id: emitter_id.into_bytes(),
             emitter_name: emitter_name.to_string(),
@@ -93,6 +102,7 @@ impl InvitationMessage {
 impl From<InvitationMessage> for StreamMessage {
     fn from(value: InvitationMessage) -> Self {
         StreamMessage::InvitationRequest {
+            invitation_orientation: value.invitation_orientation,
             req_id: Uuid::now_v7().into_bytes(),
             invitation_message_id: value.invitation_id,
             emitter_id: value.emitter_id,
