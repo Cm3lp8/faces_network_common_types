@@ -25,6 +25,14 @@ pub enum StreamMessage {
         dest_id: [u8; 16],
         ts: i64, // utc timestamp
     },
+    InvitationResponse {
+        req_id: [u8; 16],
+        invitation_message_id: [u8; 16],
+        inviter_id: [u8; 16],
+        invited_id: [u8; 16],
+        invitation_accepted: bool,
+        ts: i64, // utc timestamp
+    },
     ContactRequest {
         req_id: [u8; 16],
         peer_id: [u8; 16],
@@ -33,6 +41,36 @@ pub enum StreamMessage {
 }
 
 impl StreamMessage {
+    pub fn new_invitation_response_confirmation(
+        invitation_message_id: Uuid,
+        inviter_id: Uuid,
+        invited_id: Uuid,
+    ) -> Self {
+        let req_id = Uuid::now_v7();
+        Self::InvitationResponse {
+            req_id: req_id.into_bytes(),
+            invitation_message_id: invitation_message_id.into_bytes(),
+            inviter_id: inviter_id.into_bytes(),
+            invited_id: invited_id.into_bytes(),
+            invitation_accepted: true,
+            ts: Utc::now().timestamp(),
+        }
+    }
+    pub fn new_invitation_response_refused(
+        invitation_message_id: Uuid,
+        inviter_id: Uuid,
+        invited_id: Uuid,
+    ) -> Self {
+        let req_id = Uuid::now_v7();
+        Self::InvitationResponse {
+            req_id: req_id.into_bytes(),
+            invitation_message_id: invitation_message_id.into_bytes(),
+            inviter_id: inviter_id.into_bytes(),
+            invited_id: invited_id.into_bytes(),
+            invitation_accepted: false,
+            ts: Utc::now().timestamp(),
+        }
+    }
     pub fn new_contact_request(peer_id: Uuid) -> (StreamMessageId, Self) {
         let req_id = Uuid::now_v7();
         (
@@ -78,6 +116,14 @@ impl StreamMessage {
                 dest_id: _,
                 ts: _,
             } => Uuid::from_bytes(*req_id),
+            Self::InvitationResponse {
+                req_id,
+                invitation_message_id: _,
+                inviter_id: _,
+                invited_id: _,
+                ts: _,
+                invitation_accepted: _,
+            } => Uuid::from_bytes(*req_id),
         }
     }
     pub fn get_peer_id(&self) -> Uuid {
@@ -95,6 +141,14 @@ impl StreamMessage {
                 dest_id,
                 ts: _,
             } => Uuid::from_bytes(*dest_id),
+            Self::InvitationResponse {
+                req_id: _,
+                invitation_message_id: _,
+                inviter_id,
+                invited_id: _,
+                ts: _,
+                invitation_accepted: _,
+            } => Uuid::from_bytes(*inviter_id),
         }
     }
 }
