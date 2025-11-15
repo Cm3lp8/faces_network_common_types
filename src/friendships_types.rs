@@ -22,6 +22,9 @@ impl FriendRegisterDelta {
     pub fn take_collection(&mut self) -> Vec<FriendContact> {
         std::mem::take(&mut self.delta_collection)
     }
+    pub fn collecion(&self) -> &[FriendContact] {
+        &self.delta_collection
+    }
 }
 
 #[derive(Serialize, Debug, Deserialize, Encode, Decode, Clone, PartialEq, Eq, Hash)]
