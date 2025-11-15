@@ -33,6 +33,8 @@ pub enum StreamMessage {
         invitation_message_id: [u8; 16],
         inviter_id: [u8; 16],
         invited_id: [u8; 16],
+        inviter_friend_reg_version: Option<u64>,
+        invitee_friend_reg_version: Option<u64>,
         invitation_accepted: bool,
         ts: i64, // utc timestamp
     },
@@ -48,6 +50,8 @@ impl StreamMessage {
         invitation_message_id: Uuid,
         inviter_id: Uuid,
         invited_id: Uuid,
+        invitee_friend_reg_version: Option<u64>,
+        inviter_friend_reg_version: Option<u64>,
     ) -> Self {
         let req_id = Uuid::now_v7();
         Self::InvitationResponse {
@@ -55,6 +59,8 @@ impl StreamMessage {
             invitation_message_id: invitation_message_id.into_bytes(),
             inviter_id: inviter_id.into_bytes(),
             invited_id: invited_id.into_bytes(),
+            inviter_friend_reg_version,
+            invitee_friend_reg_version,
             invitation_accepted: true,
             ts: Utc::now().timestamp(),
         }
@@ -70,6 +76,8 @@ impl StreamMessage {
             invitation_message_id: invitation_message_id.into_bytes(),
             inviter_id: inviter_id.into_bytes(),
             invited_id: invited_id.into_bytes(),
+            inviter_friend_reg_version: None,
+            invitee_friend_reg_version: None,
             invitation_accepted: false,
             ts: Utc::now().timestamp(),
         }
@@ -147,6 +155,8 @@ impl StreamMessage {
                 invitation_message_id: _,
                 inviter_id: _,
                 invited_id: _,
+                inviter_friend_reg_version: _,
+                invitee_friend_reg_version: _,
                 ts: _,
                 invitation_accepted: _,
             } => Uuid::from_bytes(*req_id),
@@ -174,6 +184,8 @@ impl StreamMessage {
                 invitation_message_id: _,
                 inviter_id,
                 invited_id: _,
+                inviter_friend_reg_version: _,
+                invitee_friend_reg_version: _,
                 ts: _,
                 invitation_accepted: _,
             } => Uuid::from_bytes(*inviter_id),
