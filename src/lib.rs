@@ -7,6 +7,7 @@ pub mod error_types;
 pub mod faces_network_errors;
 pub mod friendships_types;
 pub mod invitation;
+pub mod notifications_types;
 pub mod signin;
 pub mod signup;
 pub mod stream_types;
@@ -24,4 +25,5 @@ pub use faces_quic_server::prelude::StreamMessageCapsule;
 
 pub use friendships_types::*;
 pub use invitation::*;
+pub use notifications_types::*;
 pub use stream_types::*;
