@@ -38,6 +38,12 @@ pub enum StreamMessage {
         invitation_accepted: bool,
         ts: i64, // utc timestamp
     },
+
+    RemovedNotification {
+        req_id: [u8; 16],
+        peer_id: [u8; 16],
+        removed_notification_id: [u8; 16],
+    },
     ContactRequest {
         req_id: [u8; 16],
         peer_id: [u8; 16],
@@ -46,6 +52,13 @@ pub enum StreamMessage {
 }
 
 impl StreamMessage {
+    pub fn new_removed_notification(peer_id: Uuid, removed_notification_id: Uuid) -> Self {
+        Self::RemovedNotification {
+            req_id: Uuid::now_v7().into_bytes(),
+            peer_id: peer_id.into_bytes(),
+            removed_notification_id: removed_notification_id.into_bytes(),
+        }
+    }
     pub fn new_invitation_response_confirmation(
         invitation_message_id: Uuid,
         inviter_id: Uuid,
@@ -160,11 +173,13 @@ impl StreamMessage {
                 ts: _,
                 invitation_accepted: _,
             } => Uuid::from_bytes(*req_id),
+            Self::RemovedNotification { req_id, .. } => Uuid::from_bytes(*req_id),
         }
     }
     /// Should be not the current installed user
     pub fn get_peer_id(&self) -> Uuid {
         match self {
+            Self::RemovedNotification { peer_id, .. } => Uuid::from_bytes(*peer_id),
             Self::ContactRequest {
                 req_id: _,
                 peer_id,
