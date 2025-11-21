@@ -4,7 +4,7 @@ use postgres_types::{FromSql, ToSql};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-#[derive(Encode, Deserialize, Serialize, Decode, Debug, Clone)]
+#[derive(Encode, Deserialize, Serialize, Decode, Debug, Clone, PartialEq, Eq, Hash)]
 pub struct DisplayContext {
     id: [u8; 16],
     participants: Vec<[u8; 16]>,
@@ -67,7 +67,9 @@ impl DisplayContext {
     }
 }
 
-#[derive(Encode, Deserialize, Serialize, Decode, Debug, Clone, Copy, FromSql, ToSql)]
+#[derive(
+    Encode, Deserialize, Serialize, Decode, Debug, Clone, Copy, FromSql, ToSql, Hash, PartialEq, Eq,
+)]
 #[postgres(name = "display_context_kind")]
 pub enum DisplayContextKind {
     #[postgres(name = "conversation")]
