@@ -1,5 +1,6 @@
 use bincode::{Decode, Encode};
 use chrono::{DateTime, Utc};
+use postgres_types::{FromSql, ToSql};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
@@ -66,8 +67,11 @@ impl DisplayContext {
     }
 }
 
-#[derive(Encode, Deserialize, Serialize, Decode, Debug, Clone, Copy)]
+#[derive(Encode, Deserialize, Serialize, Decode, Debug, Clone, Copy, FromSql, ToSql)]
+#[postgres(name = "display_context_kind")]
 pub enum DisplayContextKind {
+    #[postgres(name = "conversation")]
     Conversation,
+    #[postgres(name = "solo")]
     Solo,
 }
