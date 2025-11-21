@@ -1,8 +1,9 @@
 use bincode::{Decode, Encode};
 use chrono::{DateTime, Utc};
+use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-#[derive(Encode, Decode, Debug, Clone)]
+#[derive(Encode, Deserialize, Serialize, Decode, Debug, Clone)]
 pub struct DisplayContext {
     id: [u8; 16],
     participants: Vec<[u8; 16]>,
@@ -38,6 +39,19 @@ impl DisplayContext {
             .map(|it| Uuid::from_bytes(*it))
             .collect()
     }
+    pub fn retain_participants_by_ids(&self, user_ids: &[Uuid]) -> Vec<Uuid> {
+        self.participants
+            .iter()
+            .filter_map(|it| {
+                let id = Uuid::from_bytes(*it);
+                if user_ids.contains(&id) {
+                    None
+                } else {
+                    Some(id)
+                }
+            })
+            .collect()
+    }
     pub fn version(&self) -> u64 {
         self.version
     }
@@ -52,7 +66,7 @@ impl DisplayContext {
     }
 }
 
-#[derive(Encode, Decode, Debug, Clone, Copy)]
+#[derive(Encode, Deserialize, Serialize, Decode, Debug, Clone, Copy)]
 pub enum DisplayContextKind {
     Conversation,
     Solo,

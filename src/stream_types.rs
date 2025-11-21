@@ -3,7 +3,7 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-use crate::InvitationOrientation;
+use crate::{DisplayContext, InvitationOrientation};
 
 #[derive(Serialize, Deserialize)]
 pub struct UserStreamSessionInfo {
@@ -36,6 +36,7 @@ pub enum StreamMessage {
         inviter_friend_reg_version: Option<u64>,
         invitee_friend_reg_version: Option<u64>,
         invitation_accepted: bool,
+        first_common_display_context: Option<DisplayContext>,
         ts: i64, // utc timestamp
     },
 
@@ -63,6 +64,7 @@ impl StreamMessage {
         invitation_message_id: Uuid,
         inviter_id: Uuid,
         invited_id: Uuid,
+        first_common_display_context: DisplayContext,
         invitee_friend_reg_version: Option<u64>,
         inviter_friend_reg_version: Option<u64>,
     ) -> Self {
@@ -75,6 +77,8 @@ impl StreamMessage {
             inviter_friend_reg_version,
             invitee_friend_reg_version,
             invitation_accepted: true,
+            first_common_display_context: Some(first_common_display_context),
+
             ts: Utc::now().timestamp(),
         }
     }
@@ -92,6 +96,7 @@ impl StreamMessage {
             inviter_friend_reg_version: None,
             invitee_friend_reg_version: None,
             invitation_accepted: false,
+            first_common_display_context: None,
             ts: Utc::now().timestamp(),
         }
     }
@@ -149,30 +154,10 @@ impl StreamMessage {
     }
     pub fn get_request_id(&self) -> Uuid {
         match self {
-            Self::ContactRequest {
-                req_id,
-                peer_id: _,
-                ts: _,
+            Self::ContactRequest { req_id, .. } | Self::InvitationRequest { req_id, .. } => {
+                Uuid::from_bytes(*req_id)
             }
-            | Self::InvitationRequest {
-                req_id,
-                invitation_message_id: _,
-                inviter_id: _,
-                inviter_name: _,
-                invitee_name: _,
-                invitee_id: _,
-                ts: _,
-            } => Uuid::from_bytes(*req_id),
-            Self::InvitationResponse {
-                req_id,
-                invitation_message_id: _,
-                inviter_id: _,
-                invited_id: _,
-                inviter_friend_reg_version: _,
-                invitee_friend_reg_version: _,
-                ts: _,
-                invitation_accepted: _,
-            } => Uuid::from_bytes(*req_id),
+            Self::InvitationResponse { req_id, .. } => Uuid::from_bytes(*req_id),
             Self::RemovedNotification { req_id, .. } => Uuid::from_bytes(*req_id),
         }
     }
@@ -180,30 +165,10 @@ impl StreamMessage {
     pub fn get_peer_id(&self) -> Uuid {
         match self {
             Self::RemovedNotification { peer_id, .. } => Uuid::from_bytes(*peer_id),
-            Self::ContactRequest {
-                req_id: _,
-                peer_id,
-                ts: _,
-            } => Uuid::from_bytes(*peer_id),
-            Self::InvitationRequest {
-                req_id: _,
-                invitation_message_id: _,
-                inviter_id: _,
-                inviter_name: _,
-                invitee_name: _,
-                invitee_id,
-                ts: _,
-            } => Uuid::from_bytes(*invitee_id),
-            Self::InvitationResponse {
-                req_id: _,
-                invitation_message_id: _,
-                inviter_id,
-                invited_id: _,
-                inviter_friend_reg_version: _,
-                invitee_friend_reg_version: _,
-                ts: _,
-                invitation_accepted: _,
-            } => Uuid::from_bytes(*inviter_id),
+            Self::ContactRequest { peer_id, .. } => Uuid::from_bytes(*peer_id),
+
+            Self::InvitationRequest { invitee_id, .. } => Uuid::from_bytes(*invitee_id),
+            Self::InvitationResponse { inviter_id, .. } => Uuid::from_bytes(*inviter_id),
         }
     }
 }
