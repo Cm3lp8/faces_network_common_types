@@ -12,7 +12,7 @@ use crate::context_ressources::ContextRessourcesMetaDelta;
 pub struct DisplayContext {
     id: [u8; 16],
     participants: Vec<[u8; 16]>,
-    ressources_delta: ContextRessourcesMetaDelta,
+    ressources_delta: Option<ContextRessourcesMetaDelta>,
     version: u64,
     created_at: i64,
     updated_at: i64,
@@ -30,7 +30,7 @@ impl DisplayContext {
         Self {
             id: id.into_bytes(),
             participants: participants.into_iter().map(|it| it.into_bytes()).collect(),
-            ressources_delta: ContextRessourcesMetaDelta::default(),
+            ressources_delta: None,
             version,
             created_at: created_at.timestamp(),
             updated_at: updated_at.timestamp(),
