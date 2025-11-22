@@ -4,10 +4,15 @@ use postgres_types::{FromSql, ToSql};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
+use crate::context_ressources::ContextRessourcesMetaDelta;
+
+/// [`DisplayContext`] represents a context for the client. It reflects the state of the db.
+/// [`participants`] field represents who is authorized to access the content of this context.
 #[derive(Encode, Deserialize, Serialize, Decode, Debug, Clone, PartialEq, Eq, Hash)]
 pub struct DisplayContext {
     id: [u8; 16],
     participants: Vec<[u8; 16]>,
+    ressources_delta: ContextRessourcesMetaDelta,
     version: u64,
     created_at: i64,
     updated_at: i64,
@@ -25,6 +30,7 @@ impl DisplayContext {
         Self {
             id: id.into_bytes(),
             participants: participants.into_iter().map(|it| it.into_bytes()).collect(),
+            ressources_delta: ContextRessourcesMetaDelta::default(),
             version,
             created_at: created_at.timestamp(),
             updated_at: updated_at.timestamp(),
@@ -76,4 +82,65 @@ pub enum DisplayContextKind {
     Conversation,
     #[postgres(name = "solo")]
     Solo,
+}
+pub mod context_ressources {
+    use bincode::{Decode, Encode};
+    use serde::{Deserialize, Serialize};
+    use uuid::Uuid;
+    /// [`ContextRessourcesMeta`] represents the collection of ressources attached within the
+    /// current version of a context. It does not contain the ressources's data.
+    #[derive(Encode, Deserialize, Serialize, Decode, Debug, Clone, PartialEq, Eq, Hash)]
+    pub struct ContextRessourcesMetaDelta {
+        ressources: Vec<RessourceItem>,
+    }
+    impl ContextRessourcesMetaDelta {
+        pub fn extend_ressources(&mut self, ressources: &[RessourceItem]) {
+            self.ressources.extend_from_slice(ressources);
+        }
+        pub fn iter(&self) -> ContextRessourceIterator<'_> {
+            ContextRessourceIterator {
+                ressources: &self.ressources,
+                index: 0,
+            }
+        }
+    }
+
+    pub struct ContextRessourceIterator<'a> {
+        ressources: &'a [RessourceItem],
+        index: usize,
+    }
+    impl<'a> Iterator for ContextRessourceIterator<'a> {
+        type Item = &'a RessourceItem;
+        fn next(&mut self) -> Option<Self::Item> {
+            if let Some(item) = self.ressources.get(0) {
+                self.index += 1;
+                Some(item)
+            } else {
+                None
+            }
+        }
+    }
+    impl Default for ContextRessourcesMetaDelta {
+        fn default() -> Self {
+            Self { ressources: vec![] }
+        }
+    }
+
+    #[derive(Encode, Deserialize, Serialize, Decode, Debug, Clone, PartialEq, Eq, Hash)]
+    pub enum RessourceItem {
+        Animation { id: [u8; 16] },
+    }
+
+    impl RessourceItem {
+        pub fn new_animation_ressource(animation_id: Uuid) -> Self {
+            Self::Animation {
+                id: animation_id.into_bytes(),
+            }
+        }
+        pub fn get_ressource_id(&self) -> Uuid {
+            match self {
+                Self::Animation { id, .. } => Uuid::from_bytes(*id),
+            }
+        }
+    }
 }
