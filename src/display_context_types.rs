@@ -13,7 +13,8 @@ pub struct DisplayContext {
     id: [u8; 16],
     participants: Vec<[u8; 16]>,
     ressources_delta: Option<ContextRessourcesMetaDelta>,
-    version: u64,
+    user_session_version: u64,
+    context_version: u64,
     created_at: i64,
     updated_at: i64,
     kind: DisplayContextKind,
@@ -23,7 +24,8 @@ impl DisplayContext {
     pub fn new_multiple_participants(
         id: Uuid,
         participants: Vec<Uuid>,
-        version: u64,
+        user_session_version: u64,
+        context_version: u64,
         created_at: DateTime<Utc>,
         updated_at: DateTime<Utc>,
     ) -> Self {
@@ -31,7 +33,8 @@ impl DisplayContext {
             id: id.into_bytes(),
             participants: participants.into_iter().map(|it| it.into_bytes()).collect(),
             ressources_delta: None,
-            version,
+            user_session_version,
+            context_version,
             created_at: created_at.timestamp(),
             updated_at: updated_at.timestamp(),
             kind: DisplayContextKind::Conversation,
@@ -59,8 +62,11 @@ impl DisplayContext {
             })
             .collect()
     }
-    pub fn version(&self) -> u64 {
-        self.version
+    pub fn user_session_version(&self) -> u64 {
+        self.user_session_version
+    }
+    pub fn context_version(&self) -> u64 {
+        self.context_version
     }
     pub fn created_at(&self) -> Option<DateTime<Utc>> {
         DateTime::from_timestamp(self.created_at, 0)
