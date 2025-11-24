@@ -40,6 +40,26 @@ impl DisplayContext {
             kind: DisplayContextKind::Conversation,
         }
     }
+    pub fn new(
+        id: Uuid,
+        kind: DisplayContextKind,
+        participants: Vec<Uuid>,
+        user_session_version: u64,
+        context_version: u64,
+        created_at: DateTime<Utc>,
+        updated_at: DateTime<Utc>,
+    ) -> Self {
+        Self {
+            id: id.into_bytes(),
+            participants: participants.into_iter().map(|it| it.into_bytes()).collect(),
+            ressources_delta: None,
+            user_session_version,
+            context_version,
+            created_at: created_at.timestamp(),
+            updated_at: updated_at.timestamp(),
+            kind,
+        }
+    }
     pub fn context_id(&self) -> Uuid {
         Uuid::from_bytes(self.id)
     }
