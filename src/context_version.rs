@@ -1,3 +1,4 @@
+use bincode::{Decode, Encode};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
@@ -30,7 +31,7 @@ impl ServerContextVersion {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize, Hash, PartialEq, Clone, Eq)]
+#[derive(Debug, Serialize, Encode, Decode, Deserialize, Hash, PartialEq, Clone, Eq)]
 pub struct LastPulledUserSessionVersionAndContextVersions {
     user_id: [u8; 16],
     last_pulled_user_session_version: u64,
