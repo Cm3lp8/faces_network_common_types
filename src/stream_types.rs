@@ -57,6 +57,12 @@ pub enum StreamMessage {
 }
 
 impl StreamMessage {
+    pub fn new_session_version_available(peer_id: Uuid) -> Self {
+        Self::NewSessionVersionAvailable {
+            req_id: Uuid::now_v7().into_bytes(),
+            peer_id: peer_id.into_bytes(),
+        }
+    }
     pub fn new_removed_notification(peer_id: Uuid, removed_notification_id: Uuid) -> Self {
         Self::RemovedNotification {
             req_id: Uuid::now_v7().into_bytes(),
