@@ -50,6 +50,10 @@ pub enum StreamMessage {
         peer_id: [u8; 16],
         ts: i64,
     },
+    NewSessionVersionAvailable {
+        req_id: [u8; 16],
+        peer_id: [u8; 16],
+    },
 }
 
 impl StreamMessage {
@@ -159,6 +163,7 @@ impl StreamMessage {
             }
             Self::InvitationResponse { req_id, .. } => Uuid::from_bytes(*req_id),
             Self::RemovedNotification { req_id, .. } => Uuid::from_bytes(*req_id),
+            Self::NewSessionVersionAvailable { req_id, .. } => Uuid::from_bytes(*req_id),
         }
     }
     /// Should be not the current installed user
@@ -169,6 +174,7 @@ impl StreamMessage {
 
             Self::InvitationRequest { invitee_id, .. } => Uuid::from_bytes(*invitee_id),
             Self::InvitationResponse { inviter_id, .. } => Uuid::from_bytes(*inviter_id),
+            Self::NewSessionVersionAvailable { peer_id, .. } => Uuid::from_bytes(*peer_id),
         }
     }
 }
