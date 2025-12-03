@@ -2,6 +2,8 @@ use bincode::{Decode, Encode};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
+use crate::{RessourcesDescritors, ressources_descriptors};
+
 #[derive(Debug, Serialize, Deserialize, Hash, PartialEq, Clone, Eq)]
 /// [`ServerContextVersion`] represents two version counter states from the server.
 /// It shows the actual server session version for the user and a specific context version
@@ -28,6 +30,48 @@ impl ServerContextVersion {
     }
     pub fn user_session_version(&self) -> u64 {
         self.user_session_version
+    }
+}
+
+#[derive(Debug, Serialize, Encode, Decode, Deserialize, Hash, PartialEq, Clone, Eq)]
+pub struct PushedUserSessionDeltasWithRessourceDescriptors {
+    user_id: [u8; 16],
+    current_user_session_version: u64,
+    current_user_context_versions: Vec<([u8; 16], u64)>,
+    ressources_descriptors: RessourcesDescritors,
+}
+
+impl PushedUserSessionDeltasWithRessourceDescriptors {
+    pub fn new(
+        user_id: Uuid,
+        current_user_session_version: u64,
+        current_user_context_versions: Vec<(Uuid, u64)>,
+        ressources_descriptors: RessourcesDescritors,
+    ) -> Self {
+        Self {
+            user_id: user_id.into_bytes(),
+            current_user_session_version,
+            current_user_context_versions: current_user_context_versions
+                .iter()
+                .map(|it| (it.0.into_bytes(), it.1))
+                .collect(),
+            ressources_descriptors,
+        }
+    }
+    pub fn user_id(&self) -> Uuid {
+        Uuid::from_bytes(self.user_id)
+    }
+    pub fn current_user_session_version(&self) -> u64 {
+        self.current_user_session_version
+    }
+    pub fn current_user_context_versions(&self) -> Vec<(Uuid, u64)> {
+        self.current_user_context_versions
+            .iter()
+            .map(|it| (Uuid::from_bytes(it.0), it.1))
+            .collect()
+    }
+    pub fn ressources_descriptors(&self) -> &RessourcesDescritors {
+        &self.ressources_descriptors
     }
 }
 
