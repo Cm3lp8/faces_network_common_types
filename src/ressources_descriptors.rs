@@ -18,7 +18,10 @@ impl RessourcesDescriptors {
             ressources_collection: vec![],
         }
     }
-    pub fn add_ressource_descriptor(&mut self, descriptors: &[RessourcesDescriptorsKind]) {
+    pub fn add_ressource_descriptor(&mut self, descriptors: RessourcesDescriptorsKind) {
+        self.ressources_collection.push(descriptors);
+    }
+    pub fn extend_ressource_descriptor(&mut self, descriptors: &[RessourcesDescriptorsKind]) {
         self.ressources_collection.extend_from_slice(descriptors);
     }
     pub fn iter(&self) -> RessourcesDescriptorsIterator<'_> {
