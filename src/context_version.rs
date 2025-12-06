@@ -2,7 +2,7 @@ use bincode::{Decode, Encode};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-use crate::{RessourcesDescritors, ressources_descriptors};
+use crate::{RessourcesDescriptors, ressources_descriptors};
 
 #[derive(Debug, Serialize, Deserialize, Hash, PartialEq, Clone, Eq)]
 /// [`ServerContextVersion`] represents two version counter states from the server.
@@ -33,12 +33,13 @@ impl ServerContextVersion {
     }
 }
 
+// Fetched current server version for this user
 #[derive(Debug, Serialize, Encode, Decode, Deserialize, Hash, PartialEq, Clone, Eq)]
 pub struct PushedUserSessionDeltasWithRessourceDescriptors {
     user_id: [u8; 16],
     current_user_session_version: u64,
     current_user_context_versions: Vec<([u8; 16], u64)>,
-    ressources_descriptors: RessourcesDescritors,
+    ressources_descriptors: RessourcesDescriptors,
 }
 
 impl PushedUserSessionDeltasWithRessourceDescriptors {
@@ -46,7 +47,7 @@ impl PushedUserSessionDeltasWithRessourceDescriptors {
         user_id: Uuid,
         current_user_session_version: u64,
         current_user_context_versions: Vec<(Uuid, u64)>,
-        ressources_descriptors: RessourcesDescritors,
+        ressources_descriptors: RessourcesDescriptors,
     ) -> Self {
         Self {
             user_id: user_id.into_bytes(),
@@ -70,7 +71,7 @@ impl PushedUserSessionDeltasWithRessourceDescriptors {
             .map(|it| (Uuid::from_bytes(it.0), it.1))
             .collect()
     }
-    pub fn ressources_descriptors(&self) -> &RessourcesDescritors {
+    pub fn ressources_descriptors(&self) -> &RessourcesDescriptors {
         &self.ressources_descriptors
     }
 }
