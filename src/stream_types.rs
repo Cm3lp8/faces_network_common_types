@@ -53,15 +53,21 @@ pub enum StreamMessage {
     NewSessionVersionAvailable {
         req_id: [u8; 16],
         peer_id: [u8; 16],
+        server_user_session_version: u64,
         context: Vec<[u8; 16]>,
     },
 }
 
 impl StreamMessage {
-    pub fn new_session_version_available(peer_id: Uuid, context: Vec<Uuid>) -> Self {
+    pub fn new_session_version_available(
+        peer_id: Uuid,
+        server_user_session_version: u64,
+        context: Vec<Uuid>,
+    ) -> Self {
         Self::NewSessionVersionAvailable {
             req_id: Uuid::now_v7().into_bytes(),
             peer_id: peer_id.into_bytes(),
+            server_user_session_version,
             context: context.into_iter().map(|it| it.into_bytes()).collect(),
         }
     }
