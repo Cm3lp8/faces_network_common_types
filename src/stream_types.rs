@@ -18,17 +18,26 @@ impl UserStreamSessionInfo {
 #[derive(Serialize, Debug, Deserialize, Encode, Decode, Clone)]
 pub struct MessageEmitter {
     user_id: [u8; 16],
+    is_sending: MessageKind,
 }
 
 impl MessageEmitter {
-    pub fn new(user_id: Uuid) -> Self {
+    pub fn new_animation(user_id: Uuid) -> Self {
         Self {
             user_id: user_id.into_bytes(),
+            is_sending: MessageKind::Animation,
         }
     }
     pub fn get_emitter_id(&self) -> Uuid {
         Uuid::from_bytes(self.user_id)
     }
+    pub fn get_message_kind(&self) -> MessageKind {
+        self.is_sending
+    }
+}
+#[derive(Copy, Serialize, Debug, Deserialize, Encode, Decode, Clone)]
+pub enum MessageKind {
+    Animation,
 }
 // an Id field to make possible request confirmation when client responds
 
