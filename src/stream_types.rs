@@ -97,11 +97,18 @@ impl StreamMessage {
     pub fn new_session_version_available(
         peer_id: Uuid,
         server_user_session_version: u64,
-        with_message: Option<MessageEmitter>,
+        mut with_message: Option<MessageEmitter>,
         context: Vec<Uuid>,
     ) -> Self {
+        let req_id = Uuid::now_v7().into_bytes();
+        match with_message {
+            Some(ref mut m) => {
+                m.from_notification_id = req_id;
+            }
+            None => {}
+        }
         Self::NewSessionVersionAvailable {
-            req_id: Uuid::now_v7().into_bytes(),
+            req_id,
             peer_id: peer_id.into_bytes(),
             server_user_session_version,
             with_message,
