@@ -15,6 +15,21 @@ impl UserStreamSessionInfo {
     }
 }
 
+#[derive(Serialize, Debug, Deserialize, Encode, Decode, Clone)]
+pub struct MessageEmitter {
+    user_id: [u8; 16],
+}
+
+impl MessageEmitter {
+    pub fn new(user_id: Uuid) -> Self {
+        Self {
+            user_id: user_id.into_bytes(),
+        }
+    }
+    pub fn get_emitter_id(&self) -> Uuid {
+        Uuid::from_bytes(self.user_id)
+    }
+}
 // an Id field to make possible request confirmation when client responds
 
 #[derive(Serialize, Debug, Deserialize, Encode, Decode, Clone)]
@@ -54,6 +69,7 @@ pub enum StreamMessage {
         req_id: [u8; 16],
         peer_id: [u8; 16],
         server_user_session_version: u64,
+        with_message: Option<MessageEmitter>,
         context: Vec<[u8; 16]>,
     },
 }
@@ -62,12 +78,14 @@ impl StreamMessage {
     pub fn new_session_version_available(
         peer_id: Uuid,
         server_user_session_version: u64,
+        with_message: Option<MessageEmitter>,
         context: Vec<Uuid>,
     ) -> Self {
         Self::NewSessionVersionAvailable {
             req_id: Uuid::now_v7().into_bytes(),
             peer_id: peer_id.into_bytes(),
             server_user_session_version,
+            with_message,
             context: context.into_iter().map(|it| it.into_bytes()).collect(),
         }
     }
