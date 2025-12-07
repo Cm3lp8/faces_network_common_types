@@ -21,6 +21,14 @@ pub enum NotifAcrossKind {
         ts: i64,
         accepted: String,
     },
+    NewRessourceAvailable {
+        notification_uuid: [u8; 16],
+        emitter_id: [u8; 16],
+        recipient_id: [u8; 16],
+        emitter_name: String,
+        recipient_name: String,
+        ts: i64,
+    },
 }
 impl NotifAccrossNodes {
     pub fn new(notification_id: Uuid, creation_ts: DateTime<Utc>, kind: NotifAcrossKind) -> Self {
@@ -64,6 +72,23 @@ impl NotifAcrossKind {
             accepted: accepted.to_string(),
         })
     }
+    pub fn new_ressource_available_notification(
+        notification_uuid: Uuid,
+        emitter_id: Uuid,
+        emitter_name: &str,
+        recipient_name: &str,
+        recipient_id: Uuid,
+        timestamp: DateTime<Utc>,
+    ) -> Self {
+        Self::NewRessourceAvailable {
+            notification_uuid: notification_uuid.into_bytes(),
+            emitter_id: emitter_id.into_bytes(),
+            recipient_id: recipient_id.into_bytes(),
+            emitter_name: emitter_name.to_string(),
+            recipient_name: recipient_name.to_string(),
+            ts: timestamp.timestamp(),
+        }
+    }
 
     pub fn get_direction(&self) -> &str {
         match self {
@@ -77,9 +102,11 @@ impl NotifAcrossKind {
                 ts: _,
                 accepted: _,
             } => direction.as_str(),
+            Self::NewRessourceAvailable { .. } => "no_direction",
         }
     }
-    pub fn get_inviter_id(&self) -> Uuid {
+
+    pub fn get_emitter_id(&self) -> Uuid {
         match self {
             Self::NewInvitation {
                 direction: _,
@@ -91,9 +118,10 @@ impl NotifAcrossKind {
                 ts: _,
                 accepted: _,
             } => Uuid::from_bytes(*inviter_id),
+            Self::NewRessourceAvailable { emitter_id, .. } => Uuid::from_bytes(*emitter_id),
         }
     }
-    pub fn get_invitee_id(&self) -> Uuid {
+    pub fn get_recipient_id(&self) -> Uuid {
         match self {
             Self::NewInvitation {
                 direction: _,
@@ -105,9 +133,10 @@ impl NotifAcrossKind {
                 ts: _,
                 accepted: _,
             } => Uuid::from_bytes(*invitee_id),
+            Self::NewRessourceAvailable { recipient_id, .. } => Uuid::from_bytes(*recipient_id),
         }
     }
-    pub fn get_invitation_id(&self) -> Uuid {
+    pub fn get_notification_id(&self) -> Uuid {
         match self {
             Self::NewInvitation {
                 direction: _,
@@ -119,9 +148,12 @@ impl NotifAcrossKind {
                 ts: _,
                 accepted: _,
             } => Uuid::from_bytes(*invitation_uuid),
+            Self::NewRessourceAvailable {
+                notification_uuid, ..
+            } => Uuid::from_bytes(*notification_uuid),
         }
     }
-    pub fn get_inviter_name(&self) -> &str {
+    pub fn get_emitter_name(&self) -> &str {
         match self {
             Self::NewInvitation {
                 direction: _,
@@ -133,9 +165,10 @@ impl NotifAcrossKind {
                 ts: _,
                 accepted: _,
             } => inviter_name.as_str(),
+            Self::NewRessourceAvailable { emitter_name, .. } => &emitter_name.as_str(),
         }
     }
-    pub fn get_invitee_name(&self) -> &str {
+    pub fn get_recipient_name(&self) -> &str {
         match self {
             Self::NewInvitation {
                 direction: _,
@@ -147,6 +180,7 @@ impl NotifAcrossKind {
                 ts: _,
                 accepted: _,
             } => invitee_name.as_str(),
+            Self::NewRessourceAvailable { recipient_name, .. } => &recipient_name.as_str(),
         }
     }
     pub fn get_acceptation_status(&self) -> &str {
@@ -161,6 +195,7 @@ impl NotifAcrossKind {
                 ts: _,
                 accepted,
             } => accepted.as_str(),
+            Self::NewRessourceAvailable { .. } => "get_acceptation_status",
         }
     }
     pub fn get_timestamp(&self) -> Option<DateTime<Utc>> {
@@ -175,6 +210,7 @@ impl NotifAcrossKind {
                 ts,
                 accepted: _,
             } => DateTime::from_timestamp(*ts, 0),
+            Self::NewRessourceAvailable { ts, .. } => DateTime::from_timestamp(*ts, 0),
         }
     }
 }
