@@ -19,13 +19,15 @@ impl UserStreamSessionInfo {
 pub struct MessageEmitter {
     user_id: [u8; 16],
     is_sending: MessageKind,
+    ts: i64,
 }
 
 impl MessageEmitter {
-    pub fn new_animation(user_id: Uuid) -> Self {
+    pub fn new_animation(user_id: Uuid, ts: DateTime<Utc>) -> Self {
         Self {
             user_id: user_id.into_bytes(),
             is_sending: MessageKind::Animation,
+            ts: ts.timestamp(),
         }
     }
     pub fn get_emitter_id(&self) -> Uuid {
@@ -33,6 +35,9 @@ impl MessageEmitter {
     }
     pub fn get_message_kind(&self) -> MessageKind {
         self.is_sending
+    }
+    pub fn get_datetime(&self) -> Option<DateTime<Utc>> {
+        DateTime::from_timestamp(self.ts, 0)
     }
 }
 #[derive(Copy, Serialize, Debug, Deserialize, Encode, Decode, Clone)]
