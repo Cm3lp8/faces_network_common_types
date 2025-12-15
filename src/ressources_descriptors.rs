@@ -31,6 +31,15 @@ impl RessourcesDescriptors {
         }
     }
 }
+impl<'a> From<BorrowedRessourcesDescriptorsKind<'a>> for RessourcesDescriptorsKind {
+    fn from(value: BorrowedRessourcesDescriptorsKind<'a>) -> Self {
+        match value.0 {
+            RessourcesDescriptorsKind::Animation(anim_resources) => {
+                Self::Animation(anim_resources.clone())
+            }
+        }
+    }
+}
 
 pub struct RessourcesDescriptorsIterator<'a> {
     items: &'a Vec<RessourcesDescriptorsKind>,
