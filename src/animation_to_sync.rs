@@ -47,6 +47,9 @@ impl FetchAnimationToSyncWithItsContext {
     pub fn animation_raw_bytes(&self) -> &[u8] {
         &self.anim_raw_bytes
     }
+    pub fn take_raw_bytes(&mut self) -> Vec<u8> {
+        std::mem::take(&mut self.anim_raw_bytes)
+    }
     pub fn animation_variable_context(&self) -> AnimVariableContext {
         self.anim_variable_context.clone()
     }
