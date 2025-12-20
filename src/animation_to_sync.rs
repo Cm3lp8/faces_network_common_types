@@ -54,6 +54,29 @@ impl FetchAnimationToSyncWithItsContext {
         self.anim_variable_context.clone()
     }
 }
+#[derive(Debug, Clone, Serialize, Deserialize, Decode, Encode)]
+pub struct FetchAnimationToSyncWithoutContext {
+    anim_id: [u8; 16],
+    anim_raw_bytes: Vec<u8>,
+}
+
+impl FetchAnimationToSyncWithoutContext {
+    pub fn new(anim_raw_bytes: Vec<u8>, anim_id: Uuid) -> Self {
+        Self {
+            anim_raw_bytes,
+            anim_id: anim_id.into_bytes(),
+        }
+    }
+    pub fn animation_raw_bytes(&self) -> &[u8] {
+        &self.anim_raw_bytes
+    }
+    pub fn take_raw_bytes(&mut self) -> Vec<u8> {
+        std::mem::take(&mut self.anim_raw_bytes)
+    }
+    pub fn anim_id(&self) -> Uuid {
+        Uuid::from_bytes(self.anim_id)
+    }
+}
 
 // [u8;16 are uuid]
 #[derive(Debug, Clone, Serialize, Deserialize, Decode, Encode)]
