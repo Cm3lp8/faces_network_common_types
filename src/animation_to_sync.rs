@@ -33,16 +33,25 @@ impl BorrowDecode<'de, Context>: Sized for MyUuid {
 
 #[derive(Debug, Clone, Serialize, Deserialize, Decode, Encode)]
 pub struct FetchAnimationToSyncWithItsContexts {
+    anim_id: [u8; 16],
     anim_raw_bytes: Vec<u8>,
     anim_variable_context: Vec<AnimVariableContext>,
 }
 
 impl FetchAnimationToSyncWithItsContexts {
-    pub fn new(anim_raw_bytes: Vec<u8>, anim_variable_context: Vec<AnimVariableContext>) -> Self {
+    pub fn new(
+        anim_id: Uuid,
+        anim_raw_bytes: Vec<u8>,
+        anim_variable_context: Vec<AnimVariableContext>,
+    ) -> Self {
         Self {
+            anim_id: anim_id.into_bytes(),
             anim_raw_bytes,
             anim_variable_context,
         }
+    }
+    pub fn anim_id(&self) -> Uuid {
+        Uuid::from_bytes(self.anim_id)
     }
     pub fn animation_raw_bytes(&self) -> &[u8] {
         &self.anim_raw_bytes
