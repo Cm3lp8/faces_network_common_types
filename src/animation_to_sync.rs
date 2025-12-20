@@ -32,13 +32,13 @@ impl BorrowDecode<'de, Context>: Sized for MyUuid {
 /// As for all animation representation, x and u pos are normalized. (0.0 > 1.0)
 
 #[derive(Debug, Clone, Serialize, Deserialize, Decode, Encode)]
-pub struct FetchAnimationToSyncWithItsContext {
+pub struct FetchAnimationToSyncWithItsContexts {
     anim_raw_bytes: Vec<u8>,
-    anim_variable_context: AnimVariableContext,
+    anim_variable_context: Vec<AnimVariableContext>,
 }
 
-impl FetchAnimationToSyncWithItsContext {
-    pub fn new(anim_raw_bytes: Vec<u8>, anim_variable_context: AnimVariableContext) -> Self {
+impl FetchAnimationToSyncWithItsContexts {
+    pub fn new(anim_raw_bytes: Vec<u8>, anim_variable_context: Vec<AnimVariableContext>) -> Self {
         Self {
             anim_raw_bytes,
             anim_variable_context,
@@ -50,7 +50,7 @@ impl FetchAnimationToSyncWithItsContext {
     pub fn take_raw_bytes(&mut self) -> Vec<u8> {
         std::mem::take(&mut self.anim_raw_bytes)
     }
-    pub fn animation_variable_context(&self) -> AnimVariableContext {
+    pub fn animation_variable_context(&self) -> Vec<AnimVariableContext> {
         self.anim_variable_context.clone()
     }
 }
