@@ -5,12 +5,13 @@ use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
 use crate::ressources_descriptors::ressources_descriptors_kind::AnimationRessource;
+type CtxId = [u8; 16];
 
 /// [`RessourcesDescritors`] represents a collection of ressources a client needs to fetch from the
 /// server
 #[derive(Encode, Deserialize, Serialize, Decode, Debug, Clone, PartialEq, Eq, Hash)]
 pub struct RessourcesDescriptors {
-    ressources_collection: Vec<RessourcesDescriptorsKind>,
+    ressources_collection: Vec<(RessourcesDescriptorsKind, Vec<CtxId>)>,
 }
 impl RessourcesDescriptors {
     pub fn new_empty() -> Self {
@@ -18,10 +19,16 @@ impl RessourcesDescriptors {
             ressources_collection: vec![],
         }
     }
-    pub fn add_ressource_descriptor(&mut self, descriptors: RessourcesDescriptorsKind) {
+    pub fn add_ressource_descriptor(
+        &mut self,
+        descriptors: (RessourcesDescriptorsKind, Vec<CtxId>),
+    ) {
         self.ressources_collection.push(descriptors);
     }
-    pub fn extend_ressource_descriptor(&mut self, descriptors: &[RessourcesDescriptorsKind]) {
+    pub fn extend_ressource_descriptor(
+        &mut self,
+        descriptors: &[(RessourcesDescriptorsKind, Vec<CtxId>)],
+    ) {
         self.ressources_collection.extend_from_slice(descriptors);
     }
     pub fn iter(&self) -> RessourcesDescriptorsIterator<'_> {
@@ -33,7 +40,7 @@ impl RessourcesDescriptors {
 }
 impl<'a> From<BorrowedRessourcesDescriptorsKind<'a>> for RessourcesDescriptorsKind {
     fn from(value: BorrowedRessourcesDescriptorsKind<'a>) -> Self {
-        match value.0 {
+        match &value.0.0 {
             RessourcesDescriptorsKind::Animation(anim_resources) => {
                 Self::Animation(anim_resources.clone())
             }
@@ -42,7 +49,7 @@ impl<'a> From<BorrowedRessourcesDescriptorsKind<'a>> for RessourcesDescriptorsKi
 }
 
 pub struct RessourcesDescriptorsIterator<'a> {
-    items: &'a Vec<RessourcesDescriptorsKind>,
+    items: &'a Vec<(RessourcesDescriptorsKind, Vec<CtxId>)>,
     index: usize,
 }
 
@@ -58,12 +65,12 @@ impl<'a> Iterator for RessourcesDescriptorsIterator<'a> {
     }
 }
 impl<'a> Deref for BorrowedRessourcesDescriptorsKind<'a> {
-    type Target = RessourcesDescriptorsKind;
+    type Target = (RessourcesDescriptorsKind, Vec<CtxId>);
     fn deref(&self) -> &Self::Target {
         self.0
     }
 }
-pub struct BorrowedRessourcesDescriptorsKind<'a>(&'a RessourcesDescriptorsKind);
+pub struct BorrowedRessourcesDescriptorsKind<'a>(&'a (RessourcesDescriptorsKind, Vec<CtxId>));
 #[derive(Encode, Deserialize, Serialize, Decode, Debug, Clone, PartialEq, Eq, Hash)]
 pub enum RessourcesDescriptorsKind {
     Animation(AnimationRessource),
