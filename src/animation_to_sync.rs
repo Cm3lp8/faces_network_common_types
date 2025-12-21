@@ -142,9 +142,10 @@ impl SyncNewAnim {
         std::mem::take(&mut self.data)
     }
 }
+const QUANTIZE_V: u32 = 65535;
 
 // TODO add these {user_id, contextkind};
-#[derive(Debug, Clone, Serialize, Deserialize, Encode, Decode)]
+#[derive(Debug, Clone, Serialize, Deserialize, Encode, Decode, Hash, PartialEq, Eq)]
 pub struct AnimVariableContext {
     //user_id: [u8;16],
     anim_id: [u8; 16],
@@ -152,8 +153,8 @@ pub struct AnimVariableContext {
     context_version: u64,
     variable_context_version: u64,
     //context_kind:
-    x_pos: f32,
-    y_pos: f32,
+    x_pos: u32,
+    y_pos: u32,
 }
 impl AnimVariableContext {
     pub fn new(
@@ -169,12 +170,15 @@ impl AnimVariableContext {
             context_id: context_id.into_bytes(),
             context_version,
             variable_context_version,
-            x_pos,
-            y_pos,
+            x_pos: quantize_01(x_pos, QUANTIZE_V),
+            y_pos: quantize_01(y_pos, QUANTIZE_V),
         }
     }
     pub fn pos(&self) -> [f32; 2] {
-        [self.x_pos, self.y_pos]
+        [
+            dequantize_01(self.x_pos, QUANTIZE_V),
+            dequantize_01(self.y_pos, QUANTIZE_V),
+        ]
     }
     pub fn context_id(&self) -> Uuid {
         Uuid::from_bytes(self.context_id)
@@ -188,6 +192,18 @@ impl AnimVariableContext {
     pub fn context_version(&self) -> u64 {
         self.context_version
     }
+}
+// N = 65535
+#[inline]
+fn quantize_01(x: f32, n: u32) -> u32 {
+    debug_assert!(n > 0);
+    let x = x.clamp(0.0, 1.0);
+    (x * n as f32).round() as u32
+}
+
+#[inline]
+fn dequantize_01(q: u32, n: u32) -> f32 {
+    q as f32 / n as f32
 }
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SyncNewAnimResponse {

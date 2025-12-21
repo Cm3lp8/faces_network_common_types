@@ -4,14 +4,16 @@ use bincode::{Decode, Encode};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-use crate::ressources_descriptors::ressources_descriptors_kind::AnimationRessource;
+use crate::{
+    AnimVariableContext, ressources_descriptors::ressources_descriptors_kind::AnimationRessource,
+};
 type CtxId = [u8; 16];
 
 /// [`RessourcesDescritors`] represents a collection of ressources a client needs to fetch from the
 /// server
-#[derive(Encode, Deserialize, Serialize, Decode, Debug, Clone, PartialEq, Eq, Hash)]
+#[derive(Encode, Deserialize, Serialize, Decode, Debug, Clone, Hash, PartialEq, Eq)]
 pub struct RessourcesDescriptors {
-    ressources_collection: Vec<(RessourcesDescriptorsKind, Vec<CtxId>)>,
+    ressources_collection: Vec<(RessourcesDescriptorsKind, Vec<AnimVariableContext>)>,
 }
 impl RessourcesDescriptors {
     pub fn new_empty() -> Self {
@@ -21,13 +23,13 @@ impl RessourcesDescriptors {
     }
     pub fn add_ressource_descriptor(
         &mut self,
-        descriptors: (RessourcesDescriptorsKind, Vec<CtxId>),
+        descriptors: (RessourcesDescriptorsKind, Vec<AnimVariableContext>),
     ) {
         self.ressources_collection.push(descriptors);
     }
     pub fn extend_ressource_descriptor(
         &mut self,
-        descriptors: &[(RessourcesDescriptorsKind, Vec<CtxId>)],
+        descriptors: &[(RessourcesDescriptorsKind, Vec<AnimVariableContext>)],
     ) {
         self.ressources_collection.extend_from_slice(descriptors);
     }
@@ -49,7 +51,7 @@ impl<'a> From<BorrowedRessourcesDescriptorsKind<'a>> for RessourcesDescriptorsKi
 }
 
 pub struct RessourcesDescriptorsIterator<'a> {
-    items: &'a Vec<(RessourcesDescriptorsKind, Vec<CtxId>)>,
+    items: &'a Vec<(RessourcesDescriptorsKind, Vec<AnimVariableContext>)>,
     index: usize,
 }
 
@@ -65,12 +67,14 @@ impl<'a> Iterator for RessourcesDescriptorsIterator<'a> {
     }
 }
 impl<'a> Deref for BorrowedRessourcesDescriptorsKind<'a> {
-    type Target = (RessourcesDescriptorsKind, Vec<CtxId>);
+    type Target = (RessourcesDescriptorsKind, Vec<AnimVariableContext>);
     fn deref(&self) -> &Self::Target {
         self.0
     }
 }
-pub struct BorrowedRessourcesDescriptorsKind<'a>(&'a (RessourcesDescriptorsKind, Vec<CtxId>));
+pub struct BorrowedRessourcesDescriptorsKind<'a>(
+    &'a (RessourcesDescriptorsKind, Vec<AnimVariableContext>),
+);
 #[derive(Encode, Deserialize, Serialize, Decode, Debug, Clone, PartialEq, Eq, Hash)]
 pub enum RessourcesDescriptorsKind {
     Animation(AnimationRessource),
