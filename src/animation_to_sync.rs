@@ -120,6 +120,9 @@ impl SyncNewAnim {
     pub fn anim_id(&self) -> Uuid {
         Uuid::from_bytes(self.anim_id)
     }
+    pub fn set_anim_id(&mut self, uuid: Uuid) {
+        self.anim_id = uuid.into_bytes();
+    }
     pub fn author_id(&self) -> Uuid {
         Uuid::from_bytes(self.author_id)
     }
