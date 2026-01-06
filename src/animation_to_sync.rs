@@ -96,9 +96,11 @@ pub struct SyncNewAnim {
     fps: u8,
     frame_width: u32,
     frame_height: u32,
+    mask_png_buffer: Vec<u8>,
 }
 
 impl SyncNewAnim {
+    /// mask_png_buffer is assumed to be a Luma<u8> (1 chan ) of size frame_width * frame_height
     pub fn new(
         anim_id: Uuid,
         author_id: Uuid,
@@ -106,6 +108,7 @@ impl SyncNewAnim {
         fps: u8,
         frame_width: u32,
         frame_height: u32,
+        mask_png_buffer: Vec<u8>,
     ) -> Self {
         Self {
             anim_id: anim_id.into_bytes(),
@@ -114,6 +117,7 @@ impl SyncNewAnim {
             fps,
             frame_width,
             frame_height,
+            mask_png_buffer,
         }
     }
 
@@ -129,8 +133,14 @@ impl SyncNewAnim {
     pub fn data_len(&self) -> usize {
         self.data.len()
     }
+    pub fn mask_png_buffer_len(&self) -> usize {
+        self.mask_png_buffer.len()
+    }
     pub fn as_slice(&self) -> &[u8] {
         &self.data[..]
+    }
+    pub fn mask_data_as_slice(&self) -> &[u8] {
+        &self.mask_png_buffer[..]
     }
     pub fn frame_width(&self) -> u32 {
         self.frame_width
@@ -143,6 +153,9 @@ impl SyncNewAnim {
     }
     pub fn take_data(&mut self) -> Vec<u8> {
         std::mem::take(&mut self.data)
+    }
+    pub fn take_mask_data(&mut self) -> Vec<u8> {
+        std::mem::take(&mut self.mask_png_buffer)
     }
 }
 const QUANTIZE_V: u32 = 65535;

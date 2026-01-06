@@ -581,6 +581,7 @@ name = "faces_network_common_types"
 version = "0.1.0"
 dependencies = [
  "bincode",
+ "bytes",
  "chrono",
  "faces_quic_client",
  "faces_quic_server",

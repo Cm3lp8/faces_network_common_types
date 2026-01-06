@@ -4,6 +4,7 @@ pub mod context_sync;
 pub mod context_version;
 pub mod db_data_types;
 pub mod display_context_types;
+pub mod encode_decodes_resources;
 pub mod error_types;
 pub mod faces_network_errors;
 pub mod friendships_types;
