@@ -24,6 +24,7 @@ pub struct SignupResponseData {
     username: String,
     unique_id: Uuid,
     user_creation_ts: DateTime<Utc>,
+    refresh_token: String,
     jwt: String,
     first_experiment_display_context_id: Uuid,
     experiment_display_context_creation_ts: DateTime<Utc>,
@@ -34,6 +35,7 @@ impl SignupResponseData {
         username: &str,
         uuid: Uuid,
         user_creation_ts: DateTime<Utc>,
+        refresh_token: String,
         jwt: String,
         first_experiment_display_context_id: Uuid,
         experiment_display_context_creation_ts: DateTime<Utc>,
@@ -42,6 +44,7 @@ impl SignupResponseData {
             username: username.to_owned(),
             unique_id: uuid,
             user_creation_ts,
+            refresh_token,
             jwt,
             first_experiment_display_context_id,
             experiment_display_context_creation_ts,
@@ -52,6 +55,9 @@ impl SignupResponseData {
     }
     pub fn username(&self) -> &str {
         self.username.as_str()
+    }
+    pub fn refresh_token(&self) -> &str {
+        self.refresh_token.as_str()
     }
     pub fn jwt(&self) -> &str {
         self.jwt.as_str()
