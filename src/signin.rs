@@ -26,6 +26,7 @@ pub struct SigninResponseData {
     username: String,
     unique_id: Uuid,
     user_creation_ts: DateTime<Utc>,
+    refresh_token: String,
     jwt: String,
     user_display_contexts: Vec<UserDisplayContext>,
     user_peer_infos: Vec<UserPeersInfos>,
@@ -36,6 +37,7 @@ impl SigninResponseData {
         username: &str,
         uuid: Uuid,
         user_creation_ts: DateTime<Utc>,
+        refresh_token: String,
         jwt: String,
         user_display_contexts: Vec<UserDisplayContext>,
         user_peer_infos: Vec<UserPeersInfos>,
@@ -44,6 +46,7 @@ impl SigninResponseData {
             username: username.to_owned(),
             unique_id: uuid,
             user_creation_ts,
+            refresh_token,
             jwt,
             user_display_contexts,
             user_peer_infos,
@@ -57,6 +60,9 @@ impl SigninResponseData {
     }
     pub fn jwt(&self) -> &str {
         self.jwt.as_str()
+    }
+    pub fn refresh_token(&self) -> &str {
+        self.refresh_token.as_str()
     }
     pub fn take_user_display_contexts(&mut self) -> Vec<UserDisplayContext> {
         std::mem::take(&mut self.user_display_contexts)
