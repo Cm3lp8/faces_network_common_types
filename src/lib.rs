@@ -7,6 +7,7 @@ pub mod display_context_types;
 pub mod encode_decodes_resources;
 pub mod error_types;
 pub mod faces_network_errors;
+pub mod fcm_token_types;
 pub mod friendships_types;
 pub mod invitation;
 pub mod notifications_types;
@@ -28,6 +29,7 @@ pub use db_data_types::{ToUserContextKind, UserContextKind, UserDisplayContext, 
 pub use faces_quic_server::prelude::StreamMessageCapsule;
 
 pub use display_context_types::*;
+pub use fcm_token_types::*;
 pub use friendships_types::*;
 pub use invitation::*;
 pub use notifications_types::*;
