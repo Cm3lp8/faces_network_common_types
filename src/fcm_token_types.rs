@@ -27,3 +27,24 @@ impl FcmToken {
         self.fcm_token.as_str()
     }
 }
+#[derive(Encode, Decode, Debug)]
+pub struct FcmTokToDevicePair {
+    fcm_token: String,
+    device_id: [u8; 16],
+}
+
+impl FcmTokToDevicePair {
+    pub fn new(fcm_token: String, device_id: Uuid) -> Self {
+        Self {
+            fcm_token,
+            device_id: device_id.into_bytes(),
+        }
+    }
+
+    pub fn device_id(&self) -> Uuid {
+        Uuid::from_bytes(self.device_id)
+    }
+    pub fn fcm_token(&self) -> &str {
+        self.fcm_token.as_str()
+    }
+}
