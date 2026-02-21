@@ -121,18 +121,29 @@ pub mod context_ressources {
     /// current version of a context. It does not contain the ressources's data.
     #[derive(Encode, Deserialize, Serialize, Decode, Debug, Clone, PartialEq, Eq)]
     pub struct ContextRessourcesMetaDelta {
-        // ressources: HashMap<CompositionId, Vec<RessourceItem>>,
-        ressources: Vec<RessourceItem>,
+        ressources_by_composition: HashMap<CompositionId, Vec<RessourceItem>>,
     }
     impl ContextRessourcesMetaDelta {
-        pub fn extend_ressources(&mut self, ressources: &[RessourceItem]) {
-            self.ressources.extend_from_slice(ressources);
+        pub fn extend_ressources(&mut self, composition_id: Uuid, ressources: &[RessourceItem]) {
+            self.ressources_by_composition
+                .entry(composition_id.into_bytes())
+                .or_insert_with(Vec::new)
+                .extend_from_slice(ressources);
         }
-        pub fn iter(&self) -> ContextRessourceIterator<'_> {
-            ContextRessourceIterator {
-                ressources: &self.ressources,
+        pub fn iter_by_composition(
+            &self,
+            composition_id: Uuid,
+        ) -> Option<ContextRessourceIterator<'_>> {
+            let Some(r) = self
+                .ressources_by_composition
+                .get(&composition_id.into_bytes())
+            else {
+                return None;
+            };
+            Some(ContextRessourceIterator {
+                ressources: &r,
                 index: 0,
-            }
+            })
         }
     }
 
@@ -153,7 +164,9 @@ pub mod context_ressources {
     }
     impl Default for ContextRessourcesMetaDelta {
         fn default() -> Self {
-            Self { ressources: vec![] }
+            Self {
+                ressources_by_composition: HashMap::new(),
+            }
         }
     }
 
