@@ -12,6 +12,7 @@ use crate::context_ressources::ContextRessourcesMetaDelta;
 pub struct DisplayContext {
     id: [u8; 16],
     participants: Vec<[u8; 16]>,
+    composition_id_coll: Vec<[u8; 16]>,
     ressources_delta: Option<ContextRessourcesMetaDelta>,
     user_session_version: u64,
     context_version: u64,
@@ -24,6 +25,7 @@ impl DisplayContext {
     pub fn new_multiple_participants(
         id: Uuid,
         participants: Vec<Uuid>,
+        composition_id_coll: Vec<Uuid>,
         user_session_version: u64,
         context_version: u64,
         created_at: DateTime<Utc>,
@@ -32,6 +34,10 @@ impl DisplayContext {
         Self {
             id: id.into_bytes(),
             participants: participants.into_iter().map(|it| it.into_bytes()).collect(),
+            composition_id_coll: composition_id_coll
+                .iter()
+                .map(|it| it.into_bytes())
+                .collect(),
             ressources_delta: None,
             user_session_version,
             context_version,
@@ -43,6 +49,7 @@ impl DisplayContext {
     pub fn new(
         id: Uuid,
         kind: DisplayContextKind,
+        composition_id_coll: Vec<Uuid>,
         participants: Vec<Uuid>,
         user_session_version: u64,
         context_version: u64,
@@ -53,6 +60,10 @@ impl DisplayContext {
             id: id.into_bytes(),
             participants: participants.into_iter().map(|it| it.into_bytes()).collect(),
             ressources_delta: None,
+            composition_id_coll: composition_id_coll
+                .iter()
+                .map(|it| it.into_bytes())
+                .collect(),
             user_session_version,
             context_version,
             created_at: created_at.timestamp(),
@@ -62,6 +73,12 @@ impl DisplayContext {
     }
     pub fn context_id(&self) -> Uuid {
         Uuid::from_bytes(self.id)
+    }
+    pub fn get_composition_ids_collection(&self) -> Vec<Uuid> {
+        self.composition_id_coll
+            .iter()
+            .map(|it| Uuid::from_bytes(*it))
+            .collect()
     }
     pub fn participants(&self) -> Vec<Uuid> {
         self.participants
@@ -121,22 +138,14 @@ pub mod context_ressources {
     /// current version of a context. It does not contain the ressources's data.
     #[derive(Encode, Deserialize, Serialize, Decode, Debug, Clone, PartialEq, Eq)]
     pub struct ContextRessourcesMetaDelta {
-        composition_id_set: HashSet<CompositionId>,
         ressources_by_composition: HashMap<CompositionId, Vec<RessourceItem>>,
     }
     impl ContextRessourcesMetaDelta {
-        pub fn get_compositions_set(&self) -> Vec<Uuid> {
-            self.composition_id_set
-                .iter()
-                .map(|it| Uuid::from_bytes(*it))
-                .collect()
-        }
         /// Flatten the map
         pub fn get_all_resources_items(&self) -> Vec<&RessourceItem> {
             self.ressources_by_composition.values().flatten().collect()
         }
         pub fn extend_ressources(&mut self, composition_id: Uuid, ressources: &[RessourceItem]) {
-            self.composition_id_set.insert(composition_id.into_bytes());
             self.ressources_by_composition
                 .entry(composition_id.into_bytes())
                 .or_insert_with(Vec::new)
@@ -177,7 +186,6 @@ pub mod context_ressources {
     impl Default for ContextRessourcesMetaDelta {
         fn default() -> Self {
             Self {
-                composition_id_set: HashSet::new(),
                 ressources_by_composition: HashMap::new(),
             }
         }

@@ -171,6 +171,7 @@ const QUANTIZE_V: u32 = 65535;
 pub struct AnimVariableContext {
     //user_id: [u8;16],
     anim_id: [u8; 16],
+    composition_id: [u8; 16],
     context_id: [u8; 16],
     context_version: u64,
     variable_context_version: u64,
@@ -181,6 +182,7 @@ pub struct AnimVariableContext {
 impl AnimVariableContext {
     pub fn new(
         anim_id: Uuid,
+        composition_id: Uuid,
         context_id: Uuid,
         context_version: u64,
         variable_context_version: u64,
@@ -189,6 +191,7 @@ impl AnimVariableContext {
     ) -> Self {
         Self {
             anim_id: anim_id.into_bytes(),
+            composition_id: composition_id.into_bytes(),
             context_id: context_id.into_bytes(),
             context_version,
             variable_context_version,
@@ -201,6 +204,10 @@ impl AnimVariableContext {
             dequantize_01(self.x_pos, QUANTIZE_V),
             dequantize_01(self.y_pos, QUANTIZE_V),
         ]
+    }
+
+    pub fn composition_id(&self) -> Uuid {
+        Uuid::from_bytes(self.composition_id)
     }
     pub fn context_id(&self) -> Uuid {
         Uuid::from_bytes(self.context_id)
