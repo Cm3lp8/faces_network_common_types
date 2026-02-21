@@ -8,7 +8,7 @@ use crate::context_ressources::ContextRessourcesMetaDelta;
 
 /// [`DisplayContext`] represents a context for the client. It reflects the state of the db.
 /// [`participants`] field represents who is authorized to access the content of this context.
-#[derive(Encode, Deserialize, Serialize, Decode, Debug, Clone, PartialEq, Eq, Hash)]
+#[derive(Encode, Deserialize, Serialize, Decode, Debug, Clone, PartialEq, Eq)]
 pub struct DisplayContext {
     id: [u8; 16],
     participants: Vec<[u8; 16]>,
@@ -110,13 +110,18 @@ pub enum DisplayContextKind {
     Solo,
 }
 pub mod context_ressources {
+    use std::collections::HashMap;
+
     use bincode::{Decode, Encode};
     use serde::{Deserialize, Serialize};
     use uuid::Uuid;
+
+    type CompositionId = [u8; 16];
     /// [`ContextRessourcesMeta`] represents the collection of ressources attached within the
     /// current version of a context. It does not contain the ressources's data.
-    #[derive(Encode, Deserialize, Serialize, Decode, Debug, Clone, PartialEq, Eq, Hash)]
+    #[derive(Encode, Deserialize, Serialize, Decode, Debug, Clone, PartialEq, Eq)]
     pub struct ContextRessourcesMetaDelta {
+        // ressources: HashMap<CompositionId, Vec<RessourceItem>>,
         ressources: Vec<RessourceItem>,
     }
     impl ContextRessourcesMetaDelta {
