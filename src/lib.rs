@@ -1,5 +1,6 @@
 pub mod animation_to_sync;
 mod client_trait_impl;
+pub mod compositions;
 pub mod context_sync;
 pub mod context_version;
 pub mod db_data_types;
@@ -28,6 +29,7 @@ pub use context_sync::*;
 pub use db_data_types::{ToUserContextKind, UserContextKind, UserDisplayContext, UserPeersInfos};
 pub use faces_quic_server::prelude::StreamMessageCapsule;
 
+pub use compositions::*;
 pub use display_context_types::*;
 pub use fcm_token_types::*;
 pub use friendships_types::*;

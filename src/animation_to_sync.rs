@@ -178,6 +178,8 @@ pub struct AnimVariableContext {
     //context_kind:
     x_pos: u32,
     y_pos: u32,
+    x_pos_screen_coord: u32,
+    y_pos_screen_coord: u32,
 }
 impl AnimVariableContext {
     pub fn new(
@@ -188,6 +190,8 @@ impl AnimVariableContext {
         variable_context_version: u64,
         x_pos: f32,
         y_pos: f32,
+        x_pos_screen_coord: u32,
+        y_pos_screen_coord: u32,
     ) -> Self {
         Self {
             anim_id: anim_id.into_bytes(),
@@ -197,12 +201,20 @@ impl AnimVariableContext {
             variable_context_version,
             x_pos: quantize_01(x_pos, QUANTIZE_V),
             y_pos: quantize_01(y_pos, QUANTIZE_V),
+            x_pos_screen_coord,
+            y_pos_screen_coord,
         }
     }
     pub fn pos(&self) -> [f32; 2] {
         [
             dequantize_01(self.x_pos, QUANTIZE_V),
             dequantize_01(self.y_pos, QUANTIZE_V),
+        ]
+    }
+    pub fn pos_screen_coordinates(&self) -> [f32; 2] {
+        [
+            self.x_pos_screen_coord as f32,
+            self.y_pos_screen_coord as f32,
         ]
     }
 
