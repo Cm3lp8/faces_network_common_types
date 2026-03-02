@@ -44,6 +44,13 @@ pub struct CompositionData {
     max_y: f32,
 }
 
+impl PartialEq for CompositionData {
+    fn eq(&self, other: &Self) -> bool {
+        if self.id == other.id { true } else { false }
+    }
+}
+impl Eq for CompositionData {}
+
 impl CompositionData {
     pub fn new(
         id: Uuid,

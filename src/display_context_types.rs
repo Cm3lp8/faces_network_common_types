@@ -4,7 +4,7 @@ use postgres_types::{FromSql, ToSql};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-use crate::context_ressources::ContextRessourcesMetaDelta;
+use crate::{CompositionData, context_ressources::ContextRessourcesMetaDelta};
 
 /// [`DisplayContext`] represents a context for the client. It reflects the state of the db.
 /// [`participants`] field represents who is authorized to access the content of this context.
@@ -12,7 +12,7 @@ use crate::context_ressources::ContextRessourcesMetaDelta;
 pub struct DisplayContext {
     id: [u8; 16],
     participants: Vec<[u8; 16]>,
-    composition_id_coll: Vec<[u8; 16]>,
+    compositions: Vec<CompositionData>,
     ressources_delta: Option<ContextRessourcesMetaDelta>,
     user_session_version: u64,
     context_version: u64,
@@ -25,7 +25,7 @@ impl DisplayContext {
     pub fn new_multiple_participants(
         id: Uuid,
         participants: Vec<Uuid>,
-        composition_id_coll: Vec<Uuid>,
+        composition_id_coll: Vec<CompositionData>,
         user_session_version: u64,
         context_version: u64,
         created_at: DateTime<Utc>,
@@ -34,10 +34,7 @@ impl DisplayContext {
         Self {
             id: id.into_bytes(),
             participants: participants.into_iter().map(|it| it.into_bytes()).collect(),
-            composition_id_coll: composition_id_coll
-                .iter()
-                .map(|it| it.into_bytes())
-                .collect(),
+            compositions: composition_id_coll,
             ressources_delta: None,
             user_session_version,
             context_version,
@@ -49,7 +46,7 @@ impl DisplayContext {
     pub fn new(
         id: Uuid,
         kind: DisplayContextKind,
-        composition_id_coll: Vec<Uuid>,
+        composition_id_coll: Vec<CompositionData>,
         participants: Vec<Uuid>,
         user_session_version: u64,
         context_version: u64,
@@ -60,10 +57,7 @@ impl DisplayContext {
             id: id.into_bytes(),
             participants: participants.into_iter().map(|it| it.into_bytes()).collect(),
             ressources_delta: None,
-            composition_id_coll: composition_id_coll
-                .iter()
-                .map(|it| it.into_bytes())
-                .collect(),
+            compositions: composition_id_coll,
             user_session_version,
             context_version,
             created_at: created_at.timestamp(),
@@ -74,11 +68,8 @@ impl DisplayContext {
     pub fn context_id(&self) -> Uuid {
         Uuid::from_bytes(self.id)
     }
-    pub fn get_composition_ids_collection(&self) -> Vec<Uuid> {
-        self.composition_id_coll
-            .iter()
-            .map(|it| Uuid::from_bytes(*it))
-            .collect()
+    pub fn get_composition_ids_collection(&self) -> Vec<CompositionData> {
+        self.compositions.to_vec()
     }
     pub fn participants(&self) -> Vec<Uuid> {
         self.participants
