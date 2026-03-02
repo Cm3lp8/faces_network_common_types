@@ -34,7 +34,7 @@ impl ServerContextVersion {
 }
 
 // Fetched current server version for this user
-#[derive(Debug, Serialize, Encode, Decode, Deserialize, Hash, PartialEq, Clone, Eq)]
+#[derive(Debug, Serialize, Encode, Decode, Deserialize, PartialEq, Clone, Eq)]
 pub struct PushedUserSessionDeltasWithRessourceDescriptors {
     user_id: [u8; 16],
     current_user_session_version: u64,

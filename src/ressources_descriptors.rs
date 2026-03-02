@@ -5,13 +5,14 @@ use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
 use crate::{
-    AnimVariableContext, ressources_descriptors::ressources_descriptors_kind::AnimationRessource,
+    AnimVariableContext, CompositionData,
+    ressources_descriptors::ressources_descriptors_kind::AnimationRessource,
 };
 type CtxId = [u8; 16];
 
 /// [`RessourcesDescritors`] represents a collection of ressources a client needs to fetch from the
 /// server
-#[derive(Encode, Deserialize, Serialize, Decode, Debug, Clone, Hash, PartialEq, Eq)]
+#[derive(Encode, Deserialize, Serialize, Decode, Debug, Clone, PartialEq, Eq)]
 pub struct RessourcesDescriptors {
     ressources_collection: Vec<(RessourcesDescriptorsKind, Vec<AnimVariableContext>)>,
 }
