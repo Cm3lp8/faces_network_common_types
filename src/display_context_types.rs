@@ -68,7 +68,7 @@ impl DisplayContext {
     pub fn context_id(&self) -> Uuid {
         Uuid::from_bytes(self.id)
     }
-    pub fn get_composition_ids_collection(&self) -> Vec<CompositionData> {
+    pub fn get_composition_collection(&self) -> Vec<CompositionData> {
         self.compositions.to_vec()
     }
     pub fn participants(&self) -> Vec<Uuid> {
