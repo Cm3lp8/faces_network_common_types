@@ -80,8 +80,8 @@ pub enum RessourcesDescriptorsKind {
     Animation(AnimationRessource),
 }
 impl RessourcesDescriptorsKind {
-    pub fn new_animation_descriptor(animation_id: Uuid) -> Self {
-        Self::Animation(AnimationRessource::new(animation_id))
+    pub fn new_animation_descriptor(animation_id: Uuid, width: u32, height: u32) -> Self {
+        Self::Animation(AnimationRessource::new(animation_id, width, height))
     }
     pub fn get_id(&self) -> Uuid {
         match self {
@@ -98,15 +98,25 @@ mod ressources_descriptors_kind {
     #[derive(Encode, Deserialize, Serialize, Decode, Debug, Clone, PartialEq, Eq, Hash)]
     pub struct AnimationRessource {
         ressource_id: [u8; 16],
+        width: u32,
+        height: u32,
     }
     impl AnimationRessource {
-        pub fn new(ressource_id: Uuid) -> Self {
+        pub fn new(ressource_id: Uuid, width: u32, height: u32) -> Self {
             Self {
                 ressource_id: ressource_id.into_bytes(),
+                width,
+                height,
             }
         }
         pub fn get_id(&self) -> Uuid {
             Uuid::from_bytes(self.ressource_id)
+        }
+        pub fn width(&self) -> u32 {
+            self.width
+        }
+        pub fn height(&self) -> u32 {
+            self.height
         }
     }
 }
