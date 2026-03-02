@@ -80,22 +80,37 @@ pub enum RessourcesDescriptorsKind {
     Animation(AnimationRessource),
 }
 impl RessourcesDescriptorsKind {
-    pub fn new_animation_descriptor(animation_id: Uuid, width: u32, height: u32) -> Self {
-        Self::Animation(AnimationRessource::new(animation_id, width, height))
+    pub fn new_animation_descriptor(
+        animation_id: Uuid,
+        author_id: Uuid,
+        width: u32,
+        height: u32,
+    ) -> Self {
+        Self::Animation(AnimationRessource::new(
+            animation_id,
+            author_id,
+            width,
+            height,
+        ))
     }
     pub fn get_id(&self) -> Uuid {
         match self {
             Self::Animation(animation_desc) => animation_desc.get_id(),
         }
     }
+    pub fn get_author_id(&self) -> Uuid {
+        match self {
+            Self::Animation(animation_desc) => animation_desc.get_author_id(),
+        }
+    }
     pub fn width(&self) -> u32 {
         match self {
-            Self::Animation(animation_desc) => animation_desc.width()
+            Self::Animation(animation_desc) => animation_desc.width(),
         }
     }
     pub fn height(&self) -> u32 {
         match self {
-            Self::Animation(animation_desc) => animation_desc.height()
+            Self::Animation(animation_desc) => animation_desc.height(),
         }
     }
 }
@@ -108,16 +123,21 @@ mod ressources_descriptors_kind {
     #[derive(Encode, Deserialize, Serialize, Decode, Debug, Clone, PartialEq, Eq, Hash)]
     pub struct AnimationRessource {
         ressource_id: [u8; 16],
+        author_id: [u8; 16],
         width: u32,
         height: u32,
     }
     impl AnimationRessource {
-        pub fn new(ressource_id: Uuid, width: u32, height: u32) -> Self {
+        pub fn new(ressource_id: Uuid, author_id: Uuid, width: u32, height: u32) -> Self {
             Self {
                 ressource_id: ressource_id.into_bytes(),
+                author_id: author_id.into_bytes(),
                 width,
                 height,
             }
+        }
+        pub fn get_author_id(&self) -> Uuid {
+            Uuid::from_bytes(self.author_id)
         }
         pub fn get_id(&self) -> Uuid {
             Uuid::from_bytes(self.ressource_id)
