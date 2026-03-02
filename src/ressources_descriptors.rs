@@ -88,6 +88,16 @@ impl RessourcesDescriptorsKind {
             Self::Animation(animation_desc) => animation_desc.get_id(),
         }
     }
+    pub fn width(&self) -> u32 {
+        match self {
+            Self::Animation(animation_desc) => animation_desc.width()
+        }
+    }
+    pub fn height(&self) -> u32 {
+        match self {
+            Self::Animation(animation_desc) => animation_desc.height()
+        }
+    }
 }
 
 mod ressources_descriptors_kind {
