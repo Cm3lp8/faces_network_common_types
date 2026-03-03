@@ -2,7 +2,7 @@ use bincode::{Decode, Encode};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-use crate::{RessourcesDescriptors, ressources_descriptors};
+use crate::{CompositionData, RessourcesDescriptors, ressources_descriptors};
 
 #[derive(Debug, Serialize, Deserialize, Hash, PartialEq, Clone, Eq)]
 /// [`ServerContextVersion`] represents two version counter states from the server.
@@ -40,6 +40,7 @@ pub struct PushedUserSessionDeltasWithRessourceDescriptors {
     current_user_session_version: u64,
     current_user_context_versions: Vec<([u8; 16], u64)>,
     ressources_descriptors: RessourcesDescriptors,
+    compositions_delta: Vec<CompositionData>,
     has_more_ressources: bool,
 }
 
@@ -49,6 +50,7 @@ impl PushedUserSessionDeltasWithRessourceDescriptors {
         current_user_session_version: u64,
         current_user_context_versions: Vec<(Uuid, u64)>,
         ressources_descriptors: RessourcesDescriptors,
+        compositions_delta: Vec<CompositionData>,
         has_more_ressources: bool,
     ) -> Self {
         Self {
@@ -59,11 +61,15 @@ impl PushedUserSessionDeltasWithRessourceDescriptors {
                 .map(|it| (it.0.into_bytes(), it.1))
                 .collect(),
             ressources_descriptors,
+            compositions_delta,
             has_more_ressources,
         }
     }
     pub fn user_id(&self) -> Uuid {
         Uuid::from_bytes(self.user_id)
+    }
+    pub fn compositions_delta(&self) -> &[CompositionData] {
+        &self.compositions_delta
     }
     pub fn current_user_session_version(&self) -> u64 {
         self.current_user_session_version
