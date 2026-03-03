@@ -33,6 +33,8 @@ impl ServerContextVersion {
     }
 }
 
+type ContextId = [u8; 16];
+
 // Fetched current server version for this user
 #[derive(Debug, Serialize, Encode, Decode, Deserialize, PartialEq, Clone, Eq)]
 pub struct PushedUserSessionDeltasWithRessourceDescriptors {
@@ -40,7 +42,8 @@ pub struct PushedUserSessionDeltasWithRessourceDescriptors {
     current_user_session_version: u64,
     current_user_context_versions: Vec<([u8; 16], u64)>,
     ressources_descriptors: RessourcesDescriptors,
-    compositions_delta: Vec<CompositionData>,
+    // contextId -> CompositionData
+    compositions_delta: Vec<(ContextId, CompositionData)>,
     has_more_ressources: bool,
 }
 
@@ -50,7 +53,7 @@ impl PushedUserSessionDeltasWithRessourceDescriptors {
         current_user_session_version: u64,
         current_user_context_versions: Vec<(Uuid, u64)>,
         ressources_descriptors: RessourcesDescriptors,
-        compositions_delta: Vec<CompositionData>,
+        compositions_delta: Vec<(ContextId, CompositionData)>,
         has_more_ressources: bool,
     ) -> Self {
         Self {
@@ -68,7 +71,7 @@ impl PushedUserSessionDeltasWithRessourceDescriptors {
     pub fn user_id(&self) -> Uuid {
         Uuid::from_bytes(self.user_id)
     }
-    pub fn compositions_delta(&self) -> &[CompositionData] {
+    pub fn compositions_delta(&self) -> &[(ContextId, CompositionData)] {
         &self.compositions_delta
     }
     pub fn current_user_session_version(&self) -> u64 {
