@@ -201,8 +201,8 @@ impl AnimVariableContext {
             variable_context_version,
             x_pos: quantize_01(x_pos, QUANTIZE_V),
             y_pos: quantize_01(y_pos, QUANTIZE_V),
-            x_pos_screen_coord: quantize_01(x_pos_screen_coord, QUANTIZE_V),
-            y_pos_screen_coord: quantize_01(y_pos_screen_coord, QUANTIZE_V),
+            x_pos_screen_coord: quantize(x_pos_screen_coord, QUANTIZE_V),
+            y_pos_screen_coord: quantize(y_pos_screen_coord, QUANTIZE_V),
         }
     }
     pub fn pos(&self) -> [f32; 2] {
@@ -243,7 +243,22 @@ fn quantize_01(x: f32, n: u32) -> u32 {
 }
 
 #[inline]
+fn quantize(x: f32, n: u32) -> u32 {
+    debug_assert!(n > 0);
+    if x == 0f32 {
+        0u32
+    } else if x < 0f32 {
+        0u32
+    } else {
+        let x = x.clamp(0.0, 1.0);
+        (x * n as f32).round() as u32
+    }
+}
+#[inline]
 fn dequantize_01(q: u32, n: u32) -> f32 {
+    if q <= 0 {
+        return 0.0;
+    };
     q as f32 / n as f32
 }
 #[derive(Debug, Clone, Serialize, Deserialize)]
