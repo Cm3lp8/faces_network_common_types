@@ -250,7 +250,6 @@ fn quantize(x: f32, n: u32) -> u32 {
     } else if x < 0f32 {
         0u32
     } else {
-        let x = x.clamp(0.0, 1.0);
         (x * n as f32).round() as u32
     }
 }
