@@ -99,6 +99,7 @@ pub struct SyncNewAnim {
     anim_id: [u8; 16],
     author_id: [u8; 16],
     data: Vec<u8>,
+    still_frame_jpeg: Vec<u8>,
     fps: u8,
     frame_width: u32,
     frame_height: u32,
@@ -111,6 +112,7 @@ impl SyncNewAnim {
         anim_id: Uuid,
         author_id: Uuid,
         data: Vec<u8>,
+        still_frame_jpeg: Vec<u8>,
         fps: u8,
         frame_width: u32,
         frame_height: u32,
@@ -120,6 +122,7 @@ impl SyncNewAnim {
             anim_id: anim_id.into_bytes(),
             author_id: author_id.into_bytes(),
             data,
+            still_frame_jpeg,
             fps,
             frame_width,
             frame_height,
@@ -148,6 +151,9 @@ impl SyncNewAnim {
     pub fn mask_data_as_slice(&self) -> &[u8] {
         &self.mask_png_buffer[..]
     }
+    pub fn still_frame_jpeg_as_slice(&self) -> &[u8] {
+        &self.still_frame_jpeg[..]
+    }
     pub fn frame_width(&self) -> u32 {
         self.frame_width
     }
@@ -159,6 +165,9 @@ impl SyncNewAnim {
     }
     pub fn take_data(&mut self) -> Vec<u8> {
         std::mem::take(&mut self.data)
+    }
+    pub fn take_still_frame_jpeg_data(&mut self) -> Vec<u8> {
+        std::mem::take(&mut self.still_frame_jpeg)
     }
     pub fn take_mask_data(&mut self) -> Vec<u8> {
         std::mem::take(&mut self.mask_png_buffer)
