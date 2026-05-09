@@ -9,7 +9,7 @@ use uuid::Uuid;
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 struct MyUuid(Uuid);
-use crate::UserContextKind;
+use crate::FragmentTransform2DData;
 /*
 impl Encode for MyUuid {
     fn encode<E: Encoder>(&self, enc: &mut E) -> Result<(), EncodeError> {
@@ -176,7 +176,7 @@ impl SyncNewAnim {
 const QUANTIZE_V: u32 = 65535;
 
 // TODO add these {user_id, contextkind};
-#[derive(Debug, Clone, Serialize, Deserialize, Encode, Decode, Hash, PartialEq, Eq)]
+#[derive(Debug, Clone, Serialize, Deserialize, Encode, Decode, PartialEq)]
 pub struct AnimVariableContext {
     //user_id: [u8;16],
     anim_id: [u8; 16],
@@ -189,6 +189,7 @@ pub struct AnimVariableContext {
     y_pos: u32,
     x_pos_screen_coord: u32,
     y_pos_screen_coord: u32,
+    transform: FragmentTransform2DData,
 }
 impl AnimVariableContext {
     pub fn new(
@@ -212,6 +213,35 @@ impl AnimVariableContext {
             y_pos: quantize_01(y_pos, QUANTIZE_V),
             x_pos_screen_coord: quantize(x_pos_screen_coord, QUANTIZE_V),
             y_pos_screen_coord: quantize(y_pos_screen_coord, QUANTIZE_V),
+            transform: FragmentTransform2DData::from_pos_size(
+                [x_pos_screen_coord, y_pos_screen_coord],
+                0.0,
+                0.0,
+            ),
+        }
+    }
+    pub fn new_with_transform(
+        anim_id: Uuid,
+        composition_id: Uuid,
+        context_id: Uuid,
+        context_version: u64,
+        variable_context_version: u64,
+        x_pos: f32,
+        y_pos: f32,
+        transform: FragmentTransform2DData,
+    ) -> Self {
+        let pos = transform.pos();
+        Self {
+            anim_id: anim_id.into_bytes(),
+            composition_id: composition_id.into_bytes(),
+            context_id: context_id.into_bytes(),
+            context_version,
+            variable_context_version,
+            x_pos: quantize_01(x_pos, QUANTIZE_V),
+            y_pos: quantize_01(y_pos, QUANTIZE_V),
+            x_pos_screen_coord: quantize(pos[0], QUANTIZE_V),
+            y_pos_screen_coord: quantize(pos[1], QUANTIZE_V),
+            transform,
         }
     }
     pub fn pos(&self) -> [f32; 2] {
@@ -221,10 +251,11 @@ impl AnimVariableContext {
         ]
     }
     pub fn pos_screen_coordinates(&self) -> [f32; 2] {
-        [
-            dequantize_01(self.x_pos_screen_coord, QUANTIZE_V),
-            dequantize_01(self.y_pos_screen_coord, QUANTIZE_V),
-        ]
+        let pos = self.transform.pos();
+        [pos[0], pos[1]]
+    }
+    pub fn fragment_transform(&self) -> &FragmentTransform2DData {
+        &self.transform
     }
 
     pub fn composition_id(&self) -> Uuid {

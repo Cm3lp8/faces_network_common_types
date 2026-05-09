@@ -2,7 +2,7 @@ use bincode::{Decode, Encode};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-use crate::{CompositionData, RessourcesDescriptors, ressources_descriptors};
+use crate::{CompositionData, RessourcesDescriptors};
 
 #[derive(Debug, Serialize, Deserialize, Hash, PartialEq, Clone, Eq)]
 /// [`ServerContextVersion`] represents two version counter states from the server.
@@ -36,7 +36,7 @@ impl ServerContextVersion {
 type ContextId = [u8; 16];
 
 // Fetched current server version for this user
-#[derive(Debug, Serialize, Encode, Decode, Deserialize, PartialEq, Clone, Eq)]
+#[derive(Debug, Serialize, Encode, Decode, Deserialize, PartialEq, Clone)]
 pub struct PushedUserSessionDeltasWithRessourceDescriptors {
     user_id: [u8; 16],
     current_user_session_version: u64,
