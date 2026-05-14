@@ -7,6 +7,23 @@ use bincode::{
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
+#[derive(Debug, Clone, Serialize, Deserialize, Decode, Encode)]
+pub struct ResourcesSet {
+    set: Vec<[u8; 16]>,
+}
+impl ResourcesSet {
+    pub fn new(set: &[Uuid]) -> Self {
+        let set: Vec<[u8; 16]> = set.iter().map(|it| it.into_bytes()).collect();
+
+        Self { set }
+    }
+
+    pub fn get_set(&self) -> Vec<Uuid> {
+        let from_bytes: Vec<Uuid> = self.set.iter().map(|it| Uuid::from_bytes(*it)).collect();
+        from_bytes
+    }
+}
+
 #[derive(Clone, Debug, Deserialize, Serialize)]
 struct MyUuid(Uuid);
 use crate::FragmentTransform2DData;
