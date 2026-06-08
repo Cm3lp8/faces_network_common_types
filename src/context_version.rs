@@ -86,6 +86,9 @@ impl PushedUserSessionDeltasWithRessourceDescriptors {
     pub fn ressources_descriptors(&self) -> &RessourcesDescriptors {
         &self.ressources_descriptors
     }
+    pub fn has_more_ressources(&self) -> bool {
+        self.has_more_ressources
+    }
 }
 
 #[derive(Debug, Serialize, Encode, Decode, Deserialize, Hash, PartialEq, Clone, Eq)]
