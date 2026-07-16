@@ -436,6 +436,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "dashmap"
+version = "6.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5041cc499144891f3790297212f32a74fb938e5136a14943f338ef9e0ae276cf"
+dependencies = [
+ "cfg-if",
+ "crossbeam-utils",
+ "hashbrown 0.14.5",
+ "lock_api",
+ "once_cell",
+ "parking_lot_core",
+]
+
+[[package]]
 name = "debug_panic"
 version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -577,6 +591,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "faces_event_loop_utils"
+version = "0.1.0"
+source = "git+https://github.com/Cm3lp8/faces_event_loop_utils.git?rev=9f441dede5103996b3ea036e7fff6f2b1281c027#9f441dede5103996b3ea036e7fff6f2b1281c027"
+dependencies = [
+ "crossbeam",
+ "log",
+]
+
+[[package]]
 name = "faces_network_common_types"
 version = "0.1.0"
 dependencies = [
@@ -594,7 +617,7 @@ dependencies = [
 [[package]]
 name = "faces_quic_client"
 version = "0.1.0"
-source = "git+https://github.com/Cm3lp8/faces-quic-client.git#6a4976d610da7684256248d54ad91e7a7132043a"
+source = "git+https://github.com/Cm3lp8/faces-quic-client.git?rev=10b088721a54aa327910afa39c03a8a65836412f#10b088721a54aa327910afa39c03a8a65836412f"
 dependencies = [
  "crossbeam",
  "env_logger",
@@ -612,11 +635,13 @@ dependencies = [
 [[package]]
 name = "faces_quic_server"
 version = "0.1.0"
-source = "git+https://github.com/Cm3lp8/faces_http3_server.git#b15baded6265ed5e6de121da910036b008fb8859"
+source = "git+https://github.com/Cm3lp8/faces_http3_server.git?rev=38d246af9fe8236032b001dad5d462804646d84e#38d246af9fe8236032b001dad5d462804646d84e"
 dependencies = [
  "bincode",
  "crossbeam-channel",
+ "dashmap",
  "env_logger",
+ "faces_event_loop_utils",
  "log",
  "mio",
  "quiche",
@@ -723,6 +748,12 @@ dependencies = [
  "r-efi",
  "wasi 0.14.7+wasi-0.2.4",
 ]
+
+[[package]]
+name = "hashbrown"
+version = "0.14.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e5274423e17b7c9fc20b6e7e208532f9b19825d82dfd615708b70edd83df41f1"
 
 [[package]]
 name = "hashbrown"
@@ -904,9 +935,9 @@ dependencies = [
 
 [[package]]
 name = "log"
-version = "0.4.28"
+version = "0.4.33"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "34080505efa8e45a4b816c349525ebe327ceaa8559756f0356cba97ef3bf7432"
+checksum = "0ceec5bc11778974d1bcb055b18002eba7f4b3518b6a0081b3af5f21666da9ad"
 
 [[package]]
 name = "mac-notification-sys"
