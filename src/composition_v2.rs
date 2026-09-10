@@ -229,6 +229,10 @@ fn validate_transform(
 }
 
 fn nearly_equal(left: f32, right: f32) -> bool {
+    // Subtracting finite bounds can overflow before reaching this comparison.
+    if !left.is_finite() || !right.is_finite() {
+        return false;
+    }
     let scale = left.abs().max(right.abs()).max(1.0);
     (left - right).abs() <= f32::EPSILON * 16.0 * scale
 }
@@ -1035,6 +1039,73 @@ mod tests {
             CompositionBoundsDataV1::new(4.0, 3.0, -2.0, 2.0, -1.5, 1.5).expect("bounds"),
         )
         .expect("composition")
+    }
+
+    #[test]
+    fn bounds_reject_finite_endpoints_with_overflowing_extents() {
+        for (min_x, max_x, min_y, max_y) in [
+            (-f32::MAX, f32::MAX, 0.0, 1.0),
+            (0.0, 1.0, -f32::MAX, f32::MAX),
+        ] {
+            assert!(matches!(
+                CompositionBoundsDataV1::new(1.0, 1.0, min_x, max_x, min_y, max_y),
+                Err(CompositionDataV2ContractError::InvalidBounds { .. })
+            ));
+        }
+    }
+
+    #[test]
+    fn bounds_reject_overflow_after_json_and_bincode_decode() {
+        for (min_x, max_x, min_y, max_y) in [
+            (-f32::MAX, f32::MAX, 0.0, 1.0),
+            (0.0, 1.0, -f32::MAX, f32::MAX),
+        ] {
+            let mut invalid = sample_v2();
+            // Decoding bypasses constructors: validate the enclosing snapshot too.
+            invalid.bounds = CompositionBoundsDataV1 {
+                width: 1.0,
+                height: 1.0,
+                min_x,
+                max_x,
+                min_y,
+                max_y,
+            };
+            let json = serde_json::to_string(&invalid).expect("encode invalid bounds");
+            let from_json: CompositionDataV2 =
+                serde_json::from_str(&json).expect("decode finite coordinates");
+            assert!(matches!(
+                from_json.validate(),
+                Err(CompositionDataV2ContractError::InvalidBounds { .. })
+            ));
+
+            let bytes = bincode::encode_to_vec(&invalid, bincode::config::standard())
+                .expect("encode invalid bounds");
+            let (decoded, consumed): (CompositionDataV2, usize) =
+                bincode::decode_from_slice(&bytes, bincode::config::standard())
+                    .expect("decode finite coordinates");
+            assert_eq!(consumed, bytes.len());
+            assert!(matches!(
+                decoded.validate(),
+                Err(CompositionDataV2ContractError::InvalidBounds { .. })
+            ));
+        }
+    }
+
+    #[test]
+    fn bounds_preserve_finite_extents_and_rounding_tolerance() {
+        CompositionBoundsDataV1::empty()
+            .validate()
+            .expect("empty bounds");
+        CompositionBoundsDataV1::new(4.0, 3.0, -2.0, 2.0, -1.5, 1.5).expect("ordinary bounds");
+        CompositionBoundsDataV1::new(f32::MAX, f32::MAX, 0.0, f32::MAX, 0.0, f32::MAX)
+            .expect("large representable extents");
+        let rounded = f32::from_bits(1.0_f32.to_bits() + 8);
+        CompositionBoundsDataV1::new(rounded, rounded, 0.0, 1.0, 0.0, 1.0)
+            .expect("existing rounding tolerance");
+        assert!(matches!(
+            CompositionBoundsDataV1::new(2.0, 1.0, 0.0, 1.0, 0.0, 1.0),
+            Err(CompositionDataV2ContractError::InvalidBounds { .. })
+        ));
     }
 
     #[test]
