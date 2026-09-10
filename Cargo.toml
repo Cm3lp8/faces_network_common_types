@@ -12,7 +12,7 @@ server-side = []
 [dependencies]
 serde = {version = "1.0.226", features = ["derive"]}
 serde_json = "1.0.145"
-faces_quic_client = { git = "https://github.com/Cm3lp8/faces-quic-client.git", branch = "fix/empty-post-body", optional = true }
+faces_quic_client = { git = "https://github.com/Cm3lp8/faces-quic-client.git", rev = "a2144f2843b6fe0f76d62c858954f41bda45bae9", optional = true }
 faces_quic_server = { git = "https://github.com/Cm3lp8/faces_http3_server.git", rev = "38d246af9fe8236032b001dad5d462804646d84e" }
 uuid = {version = "1.18.1", features = ["v4", "v7", "serde"]}
 chrono = {version="0.4.42", features=["serde"]}
