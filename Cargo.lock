@@ -617,7 +617,7 @@ dependencies = [
 [[package]]
 name = "faces_quic_client"
 version = "0.1.0"
-source = "git+https://github.com/Cm3lp8/faces-quic-client.git?rev=56e7203181c330409b6185cc349679bad5110bfe#56e7203181c330409b6185cc349679bad5110bfe"
+source = "git+https://github.com/Cm3lp8/faces-quic-client.git?rev=0bf1941c59e701b6b48ff2798e76513dfb0c8c5b#0bf1941c59e701b6b48ff2798e76513dfb0c8c5b"
 dependencies = [
  "crossbeam",
  "env_logger",
