@@ -13,7 +13,7 @@ server-side = []
 serde = {version = "1.0.226", features = ["derive"]}
 serde_json = "1.0.145"
 faces_quic_client = { git = "https://github.com/Cm3lp8/faces-quic-client.git", rev = "0bf1941c59e701b6b48ff2798e76513dfb0c8c5b", optional = true }
-faces_quic_server = { git = "https://github.com/Cm3lp8/faces_http3_server.git", rev = "3cc3929f5778f4c1fe5fd6328ced767264487915" }
+faces_quic_server = { git = "https://github.com/Cm3lp8/faces_http3_server.git", rev = "6d14bea65df8adcdd5d95d85a6d86e92b4b613eb" }
 uuid = {version = "1.18.1", features = ["v4", "v7", "serde"]}
 chrono = {version="0.4.42", features=["serde"]}
 bincode = { version="2.0.1", features=["serde", "derive"]}
