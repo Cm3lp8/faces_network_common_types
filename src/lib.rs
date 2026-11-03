@@ -4,6 +4,7 @@ pub mod composition_v2;
 pub mod compositions;
 pub mod context_sync;
 pub mod context_version;
+pub mod conversation_read;
 pub mod db_data_types;
 pub mod display_context_types;
 pub mod encode_decodes_resources;
@@ -28,6 +29,7 @@ pub use animation_to_sync::*;
 pub use context_version::ServerContextVersion;
 
 pub use context_sync::*;
+pub use conversation_read::*;
 pub use db_data_types::{ToUserContextKind, UserContextKind, UserDisplayContext, UserPeersInfos};
 pub use faces_quic_server::prelude::StreamMessageCapsule;
 
