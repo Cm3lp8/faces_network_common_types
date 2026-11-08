@@ -700,7 +700,7 @@ dependencies = [
 [[package]]
 name = "faces_quic_server"
 version = "0.1.0"
-source = "git+https://github.com/Cm3lp8/faces_http3_server.git?rev=507daea3527fd33686dfb0039b515f2f81cdf562#507daea3527fd33686dfb0039b515f2f81cdf562"
+source = "git+https://github.com/Cm3lp8/faces_http3_server.git?rev=9d9dd95f3adc199d109c0a2020b95f290d0e081c#9d9dd95f3adc199d109c0a2020b95f290d0e081c"
 dependencies = [
  "bincode",
  "crossbeam-channel",
